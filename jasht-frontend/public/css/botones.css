@@ -1,0 +1,10 @@
+#agregar {
+  background: #00adee;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#agregar:hover { background: #008ac2; }
