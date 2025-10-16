@@ -1,32 +1,21 @@
-/* === PÁGINA PRINCIPAL === */
+/*pagina principal*/
 .barra-superior {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-
+/*barra de busqueda*/
 #buscar {
   flex: 1;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: #101010;
   color: #eee;
   margin-right: 10px;
 }
-
-#btn-agregar {
-  background: #00adee;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-#btn-agregar:hover { background: #008ac2; }
-
+/*tarjeta de presentacion de juego*/
 .games-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -39,11 +28,12 @@
   padding: 10px;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  box-shadow: 0 5px 14px rgba(0,0,0,0.4);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.4);
 }
+
 .game-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .game-card img {
@@ -68,9 +58,10 @@
   margin: 0;
   color: #ccc;
 }
-
+/*estrella pagina principal*/
 .rating-mini {
   margin-top: 6px;
   color: #ffd700;
   font-size: 14px;
 }
+

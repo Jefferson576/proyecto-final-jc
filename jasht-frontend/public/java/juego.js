@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const API_URL = "http://localhost:3000";
       const res = await fetch(`${API_URL}/games/${gameId}`);
-;
+      ;
 
       if (!res.ok) throw new Error("Juego no encontrado en el servidor");
 
@@ -98,8 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-        const API_URL = "http://localhost:3000";
-        const res = await fetch(`${API_URL}/games/${gameId}/reviews`, {
+      const API_URL = "http://localhost:3000";
+      const res = await fetch(`${API_URL}/games/${gameId}/reviews`, {
 
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!res.ok) {
-        const err = await res.json().catch(()=>({mensaje:'Error'}));
+        const err = await res.json().catch(() => ({ mensaje: 'Error' }));
         throw new Error(err.mensaje || "Error al enviar reseña");
       }
 
@@ -139,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // utilidad para escapar HTML en reseñas
   function escapeHtml(str) {
-    return str.replace(/[&<>"']/g, function(m) {
-      return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m];
+    return str.replace(/[&<>"']/g, function (m) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
     });
   }
 

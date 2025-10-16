@@ -15,21 +15,40 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../jasht-frontend/public")));
 
 // rutas
+// 📦 Obtener todos los juegos o filtrarlos por nombre o categoría
 app.get("/games", async (req, res) => {
   try {
-    const games = await Game.find();
+    const busqueda = req.query.search; // <-- ?search=texto
+    let games;
+
+    if (busqueda) {
+      // Buscar por nombre o categoría (sin importar mayúsculas)
+      games = await Game.find({
+        $or: [
+          { title: new RegExp(busqueda, "i") },
+          { category: new RegExp(busqueda, "i") },
+        ],
+      });
+    } else {
+      // Si no hay búsqueda, mostrar todos
+      games = await Game.find();
+    }
+
     res.json(games);
   } catch (error) {
-    res.status(500).json({ mensaje: "Error al obtener los juegos" });
+    console.error("Error al obtener juegos:", error);
+    res.status(500).json({ mensaje: "Error al obtener juegos" });
   }
 });
 
+// 📦 Obtener un solo juego por su ID
 app.get("/games/:id", async (req, res) => {
   try {
     const game = await Game.findById(req.params.id);
     if (!game) return res.status(404).json({ mensaje: "Juego no encontrado" });
     res.json(game);
   } catch (error) {
+    console.error("Error al obtener el juego:", error);
     res.status(500).json({ mensaje: "Error al obtener el juego" });
   }
 });

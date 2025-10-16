@@ -1,17 +1,15 @@
-// app.js robusto — reemplaza todo el archivo por este bloque
 document.addEventListener('DOMContentLoaded', () => {
-  // Buscar contenedor posible (soporta ambos nombres)
   const contenedor =
     document.getElementById('game-container') ||
     document.getElementById('games-container') ||
     document.querySelector('.games-container');
 
   if (!contenedor) {
-    console.error('No se encontró el contenedor de juegos. Asegúrate de tener un elemento con id="game-container" o id="games-container" o class="games-container".');
+    console.error('No se encontró el contenedor de juegos.');
     return;
   }
 
-  const inputBuscar = document.getElementById('buscar'); // puede ser null (no obligatorio)
+  const inputBuscar = document.getElementById('buscar');
   const modal = document.getElementById('edit-modal');
   const closeBtn = document.querySelector('.close');
   const editForm = document.getElementById('edit-form');
@@ -20,17 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Añade listener de búsqueda solo si existe
   function setupBuscar(callback) {
     if (!inputBuscar) return;
-    // remover listeners previos (por si se recarga este script)
     inputBuscar.replaceWith(inputBuscar.cloneNode(true));
     const nuevoBuscar = document.getElementById('buscar');
     nuevoBuscar.addEventListener('input', (e) => {
       const texto = e.target.value.toLowerCase();
-      // el callback debe re-renderizar usando la lista disponible
       if (typeof callback === 'function') callback(texto);
     });
   }
 
-  // Renderizar lista de juegos (recibe array y el contenedor DOM)
+  // Renderizar lista de juegos recibe array y el contenedor DOM.
   function renderizarJuegos(lista) {
     contenedor.innerHTML = '';
 
@@ -49,10 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <img src="${imagen}" alt="${escapeHtml(juego.title || 'Juego')}">
         <div class="info">
           <h2>${escapeHtml(juego.title || 'Sin título')}</h2>
-          <p>${escapeHtml((juego.description || '').slice(0, 120))}${juego.description && juego.description.length > 120 ? '...' : ''}</p>
+          <p>${escapeHtml((juego.description || '').slice(0, 130))}${juego.description && juego.description.length > 130 ? '...' : ''}</p>
           <p><strong>Categoría:</strong> ${escapeHtml(juego.category || 'Desconocida')}</p>
           <p><strong>Horas jugadas:</strong> ${juego.hoursPlayed ?? 0}</p>
-          <div class="rating-mini">⭐ ${juego.rating ? Number(juego.rating).toFixed(1) : '0.0'}/5</div>
+          <div class="rating-mini"> &#9733; ${juego.rating ? Number(juego.rating).toFixed(1) : '0.0'}/5</div>
         </div>
         <div class="game-actions">
           <button class="edit-btn">Editar</button>
@@ -77,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`/games/${juego._id}`, { method: 'DELETE' });
             if (res.ok) {
               alert('Juego eliminado correctamente');
-              cargarJuegos(); // recargar lista
+              cargarJuegos();
             } else {
               const err = await res.json().catch(() => ({ mensaje: 'Error al eliminar' }));
               alert('Error: ' + (err.mensaje || 'No se pudo eliminar'));
@@ -90,11 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Botón editar
-      const editBtn = card.querySelector('.edit-btn');
+      const editBtn = card.querySelector(".edit-btn");
       if (editBtn) {
-        editBtn.addEventListener('click', (e) => {
+        editBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          if (typeof abrirModalEdicion === 'function') abrirModalEdicion(juego);
+          abrirModalEdicion(juego);
         });
       }
 
@@ -106,23 +102,38 @@ document.addEventListener('DOMContentLoaded', () => {
   let juegosCache = [];
 
   // Cargar juegos desde backend
-  async function cargarJuegos() {
-    try {
-      const API_URL = "http://localhost:3000"; // ← dirección de tu backend
+      async function cargarJuegos() {
+        try {
+          const API_URL = "http://localhost:3000"; // ← dirección de tu backend
 
 
-      const res = await fetch(`${API_URL}/games`);
+          const res = await fetch(`${API_URL}/games`);
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const juegos = await res.json();
-      juegosCache = Array.isArray(juegos) ? juegos : [];
-      renderizarJuegos(juegosCache);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const juegos = await res.json();
+          juegosCache = Array.isArray(juegos) ? juegos : [];
+          renderizarJuegos(juegosCache);
 
-      // setup buscar: filtra la lista en memoria
-      setupBuscar(texto => {
-        const filtrados = juegosCache.filter(j => (j.title || '').toLowerCase().includes(texto));
-        renderizarJuegos(filtrados);
-      });
+          
+          // setup buscar: filtra la lista en memoria
+    setupBuscar(async (texto) => {
+      try {
+        const API_URL = "http://localhost:3000";
+        let url = `${API_URL}/games`;
+
+        if (texto.trim() !== "") {
+          url += `?search=${encodeURIComponent(texto.trim())}`;
+        }
+
+        const res = await fetch(url);
+        const juegos = await res.json();
+        juegosCache = Array.isArray(juegos) ? juegos : [];
+        renderizarJuegos(juegosCache);
+      } catch (error) {
+        console.error("Error en la búsqueda:", error);
+      }
+    });
+
 
     } catch (err) {
       console.error('Error cargando juegos:', err);
@@ -130,9 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // =========================
   // Agregar nuevo juego (si existe form)
-  // =========================
   const gameForm = document.getElementById('game-form');
   if (gameForm) {
     gameForm.addEventListener('submit', async (e) => {
@@ -235,4 +244,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar
   cargarJuegos();
+
+  function abrirModalEdicion(juego) {
+    const modal = document.getElementById("modal-editar");
+    const inputTitulo = document.getElementById("edit-titulo");
+    const inputDescripcion = document.getElementById("edit-descripcion");
+    const inputCategoria = document.getElementById("edit-categoria");
+    const btnGuardar = document.getElementById("guardar-edicion");
+    const btnCancelar = document.getElementById("cancelar-edicion");
+
+    modal.style.display = "flex";
+    inputTitulo.value = juego.title || "";
+    inputDescripcion.value = juego.description || "";
+    inputCategoria.value = juego.category || "";
+
+    btnGuardar.onclick = async () => {
+      const nuevosDatos = {
+        title: inputTitulo.value,
+        description: inputDescripcion.value,
+        category: inputCategoria.value,
+      };
+
+      await fetch(`http://localhost:3000/games/${juego._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevosDatos),
+      });
+
+      alert("Juego actualizado");
+      modal.style.display = "none";
+      location.reload();
+    };
+
+    btnCancelar.onclick = () => {
+      modal.style.display = "none";
+    };
+  }
 });

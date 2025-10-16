@@ -1,19 +1,23 @@
-/* === ESTILO GENERAL === */
-* { box-sizing: border-box; }
+/*estilo general*/
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-  background: #0f0f10;
+  background: #1a1a4e;
   color: #e6e6e6;
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* === HEADER === */
+/*header*/
 header {
-  background: linear-gradient(180deg,#171717 0%, #121212 100%);
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, #121212 10%, #ffffff 100%);
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
+
 .header-inner {
   max-width: 1100px;
   margin: 0 auto;
@@ -21,67 +25,76 @@ header {
   align-items: center;
   gap: 14px;
 }
-.logo { font-size: 28px; }
+
+.logo {
+  font-size: 28px;
+}
+
 header h1 {
   margin: 0;
-  color: #00adee;
+  color: #b8ced6;
   letter-spacing: 1px;
   font-size: 28px;
 }
 
-/* === LAYOUT === */
+/*LAYOUT*/
 .page-wrap {
   max-width: 1100px;
   margin: 24px auto;
   padding: 0 18px;
 }
 
-/* === Volver === */
-.btn-volver {
-  background: #00adee;
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 14px rgba(0,173,238,0.14);
-}
-.btn-volver:hover { background:#008ac2; }
-
-/* === TARJETA DETALLE === */
+/*TARJETA DETALLE*/
 .detalle-pagina {
   background: #151515;
   border-radius: 12px;
   padding: 26px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
-/* portada */
+/*portada*/
 .portada {
   display: flex;
   gap: 28px;
   align-items: center;
   flex-wrap: wrap;
 }
+
 .portada img {
   width: 360px;
   height: 220px;
   object-fit: cover;
   border-radius: 10px;
-  background: linear-gradient(90deg,#222,#1a1a1a);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  background: linear-gradient(90deg, #222, #1a1a1a);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
 }
-.info-principal { flex: 1; }
-.info-principal h2 { margin: 0 0 8px 0; color:#00adee; font-size: 1.8rem; }
-.info-principal p { margin:6px 0; color:#d0d0d0; }
+
+.info-principal {
+  flex: 1;
+}
+
+.info-principal h2 {
+  margin: 0 0 8px 0;
+  color: #00adee;
+  font-size: 1.8rem;
+}
+
+.info-principal p {
+  margin: 6px 0;
+  color: #d0d0d0;
+}
 
 /* secciones */
-.descripcion, .extra-info, .reseñas {
+.descripcion,
+.extra-info,
+.reseñas {
   margin-top: 26px;
 }
-.descripcion h3, .extra-info h3, .reseñas h3 {
-  color:#00adee;
+
+.descripcion h3,
+.extra-info h3,
+.reseñas h3 {
+  color: #00adee;
   margin: 0 0 10px 0;
 }
 
@@ -99,6 +112,7 @@ header h1 {
   padding: 0;
   margin: 0 0 12px 0;
 }
+
 .review-item {
   background: #1b1b1b;
   padding: 12px;
@@ -107,24 +121,37 @@ header h1 {
   gap: 12px;
   align-items: flex-start;
   margin-bottom: 10px;
-  border: 1px solid rgba(255,255,255,0.02);
+  border: 1px solid rgba(255, 255, 255, 0.02);
 }
-.review-stars { color:#ffd700; font-size:16px; line-height:1; }
-.review-text { color:#dfe6ea; font-size:14px; }
+
+.review-stars {
+  color: #ffd700;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.review-text {
+  color: #dfe6ea;
+  font-size: 14px;
+}
 
 /* no reviews */
-.no-reviews { color: #c0c0c0; padding: 10px 0; }
+.no-reviews {
+  color: #c0c0c0;
+  padding: 10px 0;
+}
 
-/* form reseñas */
+/* formulario de reseñas */
 .review-form {
   margin-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 #review-text {
   background: #101010;
-  border: 1px solid rgba(255,255,255,0.03);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   color: #e6e6e6;
   padding: 12px;
   border-radius: 8px;
@@ -132,28 +159,19 @@ header h1 {
   resize: vertical;
 }
 
-/* botones */
-.btn-enviar {
-  background: #00adee;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  align-self: flex-end;
-  box-shadow: 0 6px 18px rgba(0,173,238,0.12);
-}
-.btn-enviar:hover { background:#008ac2; }
-
-/* === ESTRELLAS (rating) === */
-/* inputs en HTML are 5..1 with row-reverse styling to show 1..5 left->right visually */
+/* ESTRELLAS (rating) */
+/*estrellas de 1 a 5 iluminacion*/
 .rating-stars {
   display: flex;
-  flex-direction: row-reverse; /* usa row-reverse para que la estrella 5 quede a la izquierda en DOM y visual quede correcta */
+  flex-direction: row-reverse;
   justify-content: flex-end;
   gap: 8px;
 }
-.rating-stars input { display: none; }
+
+.rating-stars input {
+  display: none;
+}
+
 .rating-stars label {
   font-size: 28px;
   color: #555;
@@ -161,14 +179,30 @@ header h1 {
   transition: color 0.15s ease;
   user-select: none;
 }
+
 .rating-stars label:hover,
-.rating-stars label:hover ~ label { color: #ffea00; }
-/* seleccionadas */
-.rating-stars input:checked ~ label { color: #ffd700; }
+.rating-stars label:hover~label {
+  color: #ffea00;
+}
+
+/* seleccionadas iluminacion */
+.rating-stars input:checked~label {
+  color: #ffd700;
+}
 
 /* responsive */
 @media (max-width: 800px) {
-  .portada { flex-direction: column; align-items: flex-start; }
-  .portada img { width: 100%; height: 220px; }
-  .info-principal { width: 100%; }
+  .portada {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .portada img {
+    width: 100%;
+    height: 220px;
+  }
+
+  .info-principal {
+    width: 100%;
+  }
 }
