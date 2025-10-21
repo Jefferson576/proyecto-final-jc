@@ -1,0 +1,49 @@
+/* Página de estadísticas */
+
+.btn-volver {
+  display: inline-block;
+  background-color: #00adee;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.estadisticas-container {
+  max-width: 900px;
+  margin: auto;
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(0,0,0,0.5);
+}
+
+.stats-totales {
+  margin-bottom: 30px;
+}
+
+.stats-totales p {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+.graficos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.grafico {
+  background-color: #222;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+}
+
+canvas {
+  width: 100%;
+  height: 300px;
+}

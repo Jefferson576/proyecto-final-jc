@@ -1,4 +1,8 @@
 /*pagina principal*/
+header {
+  text-align: center;
+  margin: 0px 0;
+}
 .barra-superior {
     display: flex;
     justify-content: space-between;
@@ -68,3 +72,41 @@
     font-size: 14px;
 }
 
+/*  HEADER  MENÚ PRINCIPAL */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #111;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.main-header h1 {
+  color: #00adee;
+  font-size: 26px;
+  margin: 0;
+}
+
+.menu {
+  display: flex;
+  gap: 200px;
+}
+
+.menu a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.menu a:hover {
+  color: #00adee;
+  transform: scale(1.1);
+}
+
+.main-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}

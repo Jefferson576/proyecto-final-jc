@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Estadísticas Personales - JASHT</title>
+        <link rel="stylesheet" href="/style.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>🎮 Estadísticas Personales</h1>
+            <button class="btn-volver" onclick="window.location.href='/index.html'">&#8592;Volver</button>
+        </header>
+        <section class="estadisticas-container">
+            <div class="stats-totales">
+                <h2>Resumen general</h2>
+                <p>
+                    <strong>Total de juegos:</strong>
+                    <span id="total-juegos">0</span>
+                </p>
+                <p>
+                    <strong>Total de horas jugadas:</strong>
+                    <span id="total-horas">0</span>
+                </p>
+                <p>
+                    <strong>Promedio de calificación:</strong>
+                    <span id="promedio-rating">0</span>
+                    /5
+                </p>
+            </div>
+            <div class="graficos">
+                <div class="grafico">
+                    <h3>Horas jugadas por juego</h3>
+                    <canvas id="graficoHoras"></canvas>
+                </div>
+                <div class="grafico">
+                    <h3>Juegos por categoría</h3>
+                    <canvas id="graficoCategorias"></canvas>
+                </div>
+            </div>
+        </section>
+        <script src="/java/estadisticas.js"></script>
+    </body>
+</html>
