@@ -1,53 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Agregar juego - JASHT STORE</title>
-  <link rel="stylesheet" href="/style.css" />
-</head>
-
-<body>
-  <header>
-    <div class="header-inner">
-      <div class="logo">
-        <img src="../img/logo.png" alt="" width="60" height="60">
-      </div>
-      <h1>JASHT STORE</h1>
-    </div>
-  </header>
-
-  <main class="formulario-juego">
-    <button class="volver" onclick="window.location.href='/index.html'">← Volver</button>
-
-    <form id="form-juego">
-
-      <label>Título del juego:</label>
-      <input type="text" id="title" required>
-
-      <label>Descripción:</label>
-      <textarea id="description" rows="4" required></textarea>
-
-      <label>Categoría:</label>
-      <input type="text" id="category" required>
-
-      <label>URL de la imagen:</label>
-      <input type="text" id="image" placeholder="https://...">
-
-      <label> Desarrollador: </label>
-      <input type="text" id="developer" required>
-
-      <label>Horas jugadas:</label>
-      <input type="number" id="hoursPlayed" value="0" min="0">
-
-      <label>Puntuación inicial (0-5):</label>
-      <input type="number" id="rating" value="0" min="0" max="5" step="0.1">
-
-      <button type="submit" id="agregar">Agregar juego</button>
-    </form>
-  </main>
-
-  <script src="/java/insertar.js"></script>
-</body>
-
+    <head>
+        <meta charset="UTF-8">
+        <title>Agregar juego - JASHT STORE</title>
+        <link rel="stylesheet" href="/style.css"/>
+    </head>
+    <body>
+        <header>
+            <div class="header-inner">
+                <div class="logo">
+                    <img src="../img/logo.png" alt="" width="60" height="60">
+                </div>
+                <h1>JASHT STORE</h1>
+            </div>
+        </header>
+        <main class="formulario-juego">
+            <button class="volver" onclick="window.location.href='/index.html'">&#8592; Volver</button>
+            <form id="form-juego">
+                <label>Título del juego:</label>
+                <input type="text" id="title" required>
+                <label>Descripción:</label>
+                <textarea id="description" rows="4" required></textarea>
+                <label>Categoría:</label>
+                <input type="text" id="category" required>
+                <label>URL de la imagen:</label>
+                <input type="text" id="image" placeholder="https://...">
+                <label>Desarrollador: </label>
+                <input type="text" id="developer" required>
+                <label>Horas jugadas:</label>
+                <input type="number" id="hoursPlayed" value="0" min="0">
+                <label>Puntuación inicial (0-5):</label>
+                <input type="number" id="rating" value="0" min="0" max="5" step="0.1">
+                <button type="submit" id="agregar">Agregar juego</button>
+            </form>
+        </main>
+        <script src="/java/insertar.js"></script>
+    </body>
 </html>

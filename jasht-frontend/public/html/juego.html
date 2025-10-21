@@ -1,85 +1,93 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Detalles del Juego - JASHT STORE</title>
-  <link rel="stylesheet" href="/style.css" />
-</head>
-<body>
-
-  <header>
-    <div class="header-inner">
-      <div class="logo">
-        <img src="../img/logo.png" alt="Logo JASHT" width="60" height="60">
-      </div>
-      <h1>JASHT STORE</h1>
-    </div>
-  </header>
-
-  <main class="page-wrap">
-    <button id="volver" class="btn-volver">⬅ Volver</button>
-
-    <section class="detalle-pagina">
-      <div class="portada">
-        <img id="imagen" src="" alt="Imagen del juego" />
-        <div class="info-principal">
-          <h2 id="titulo">Cargando...</h2>
-          <p><strong>Año:</strong> <span id="anio">—</span></p>
-          <p><strong>Categoría:</strong> <span id="categoria">—</span></p>
-          <p><strong>Desarrollador:</strong> <span id="developer">—</span></p>
-        </div>
-      </div>
-
-      <section class="descripcion">
-        <h3>Descripción</h3>
-        <p id="descripcion">Cargando descripción...</p>
-      </section>
-
-      <section class="extra-info">
-        <h3>Información adicional</h3>
-        <ul>
-          <li><strong>Tamaño:</strong> <span id="size">—</span></li>
-          <li><strong>Versión:</strong> <span id="version">—</span></li>
-          <li><strong>Puntuación:</strong> <span id="rating">—</span> /5</li>
-          <li><strong>Horas jugadas:</strong> <span id="horas">—</span></li>
-        </ul>
-      </section>
-
-      <section class="reseñas">
-        <h3>Reseñas de jugadores</h3>
-
-        <ul id="reviews-list" class="reviews-list">
-          <li>Cargando reseñas...</li>
-        </ul>
-
-        <form id="review-form" class="review-form">
-          <div class="rating-stars" aria-label="Puntuación">
-            <input type="radio" id="star5" name="rating" value="5">
-            <label for="star5" title="5 estrellas">&#9733;</label>
-
-            <input type="radio" id="star4" name="rating" value="4">
-            <label for="star4" title="4 estrellas">&#9733;</label>
-
-            <input type="radio" id="star3" name="rating" value="3">
-            <label for="star3" title="3 estrellas">&#9733;</label>
-
-            <input type="radio" id="star2" name="rating" value="2">
-            <label for="star2" title="2 estrellas">&#9733;</label>
-
-            <input type="radio" id="star1" name="rating" value="1">
-            <label for="star1" title="1 estrella">&#9733;</label>
-          </div>
-
-          <textarea id="review-text" placeholder="Escribe tu reseña..." required></textarea>
-          <div class="review-actions">
-            <button type="submit" class="btn-enviar">Enviar reseña</button>
-          </div>
-        </form>
-      </section>
-    </section>
-  </main>
-
-  <script src="/java/juego.js"></script>
-</body>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>Detalles del Juego - JASHT STORE</title>
+        <link rel="stylesheet" href="/style.css"/>
+    </head>
+    <body>
+        <header>
+            <div class="header-inner">
+                <div class="logo">
+                    <img src="../img/logo.png" alt="Logo JASHT" width="60" height="60">
+                </div>
+                <h1>JASHT STORE</h1>
+            </div>
+        </header>
+        <main class="page-wrap">
+            <button id="volver" class="btn-volver">⬅ Volver</button>
+            <section class="detalle-pagina">
+                <div class="portada">
+                    <img id="imagen" src="" alt="Imagen del juego"/>
+                    <div class="info-principal">
+                        <h2 id="titulo">Cargando...</h2>
+                        <p>
+                            <strong>Año:</strong>
+                            <span id="anio">—</span>
+                        </p>
+                        <p>
+                            <strong>Categoría:</strong>
+                            <span id="categoria">—</span>
+                        </p>
+                        <p>
+                            <strong>Desarrollador:</strong>
+                            <span id="developer">—</span>
+                        </p>
+                    </div>
+                </div>
+                <section class="descripcion">
+                    <h3>Descripción</h3>
+                    <p id="descripcion">Cargando descripción...</p>
+                </section>
+                <section class="extra-info">
+                    <h3>Información adicional</h3>
+                    <ul>
+                        <li>
+                            <strong>Tamaño:</strong>
+                            <span id="size">—</span>
+                        </li>
+                        <li>
+                            <strong>Versión:</strong>
+                            <span id="version">—</span>
+                        </li>
+                        <li>
+                            <strong>Puntuación:</strong>
+                            <span id="rating">—</span>
+                            /5
+                        </li>
+                        <li>
+                            <strong>Horas jugadas:</strong>
+                            <span id="horas">—</span>
+                        </li>
+                    </ul>
+                </section>
+                <section class="reseñas">
+                    <h3>Reseñas de jugadores</h3>
+                    <ul id="reviews-list" class="reviews-list">
+                        <li>Cargando reseñas...</li>
+                    </ul>
+                    <form id="review-form" class="review-form">
+                        <div class="rating-stars" aria-label="Puntuación">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5" title="5 estrellas">&#9733;</label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4" title="4 estrellas">&#9733;</label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3" title="3 estrellas">&#9733;</label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2" title="2 estrellas">&#9733;</label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1" title="1 estrella">&#9733;</label>
+                        </div>
+                        <textarea id="review-text" placeholder="Escribe tu reseña..." required></textarea>
+                        <div class="review-actions">
+                            <button type="submit" class="btn-enviar">Enviar reseña</button>
+                        </div>
+                    </form>
+                </section>
+            </section>
+        </main>
+        <script src="/java/juego.js"></script>
+    </body>
 </html>

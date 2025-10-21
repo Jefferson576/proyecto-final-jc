@@ -1,99 +1,114 @@
 /*boton agregar*/
 #agregar {
-  background: #00adee;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+    background: #00adee;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
-#agregar:hover { background: #008ac2; }
+
+#agregar:hover {
+    background: #008ac2;
+}
 
 /*botones editar*/
 .edit-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
-.edit-btn:hover { background-color: #0056b3; }
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
 /*boton eliminar*/
 .delete-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  position: flex-start;
-  
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: flex-start;
 }
-.delete-btn:hover { background-color: #c82333; }
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
 
 .game-actions {
-  display: absolute;
-  justify-content: center;  /* centra horizontalmente */
-  align-items: center;       /* centra verticalmente */
-  gap: 10px;                 /* espacio entre botones */
-  margin-top: 10px;
+    display: absolute;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .modal-botones {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 .modal-botones button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 #guardar-edicion {
-  background-color: #28a745;
-  color: white;
+    background-color: #28a745;
+    color: white;
 }
-#guardar-edicion:hover { background-color: #218838; }
+
+#guardar-edicion:hover {
+    background-color: #218838;
+}
 
 #cancelar-edicion {
-  background-color: #dc3545;
-  color: white;
+    background-color: #dc3545;
+    color: white;
 }
-#cancelar-edicion:hover { background-color: #c82333; }
+
+#cancelar-edicion:hover {
+    background-color: #c82333;
+}
 
 /* boton volver */
 .btn-volver {
-  background: #00adee;
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 14px rgba(0, 173, 238, 0.14);
+    background: #00adee;
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 14px rgba(0, 173, 238, 0.14);
 }
 
 .btn-volver:hover {
-  background: #008ac2;
+    background: #008ac2;
 }
 
 /* boton envir reseña pagina */
 .btn-enviar {
-  background: #00adee;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  align-self: flex-end;
-  box-shadow: 0 6px 18px rgba(0, 173, 238, 0.12);
+    background: #00adee;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    align-self: flex-end;
+    box-shadow: 0 6px 18px rgba(0, 173, 238, 0.12);
 }
 
 .btn-enviar:hover {
-  background: #008ac2;
+    background: #008ac2;
 }

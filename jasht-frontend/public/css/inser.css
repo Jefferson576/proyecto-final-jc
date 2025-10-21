@@ -1,43 +1,42 @@
 /* FORMULARIO DE AGREGAR JUEGO */
 .formulario-juego {
-  max-width: 500px;
-  margin: 30px auto;
-  background: #1a1a1a;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    max-width: 500px;
+    margin: 30px auto;
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 .formulario-juego label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-  color: #00adee;
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #00adee;
 }
 
-.formulario-juego input,
-.formulario-juego textarea {
-  width: 100%;
-  margin-top: 5px;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background: #101010;
-  color: white;
+.formulario-juego input, .formulario-juego textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #101010;
+    color: white;
 }
 
 .formulario-juego button {
-  margin-top: 20px;
-  width: 100%;
-  background: #00adee;
-  border: none;
-  color: white;
-  padding: 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+    background: #00adee;
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 .formulario-juego button:hover {
-  background: #008ac2;
+    background: #008ac2;
 }

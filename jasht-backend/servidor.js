@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../jasht-frontend/public")));
 
 // rutas
-// 📦 Obtener todos los juegos o filtrarlos por nombre o categoría
+// Obtener todos los juegos o filtrarlos por nombre o categoría
 app.get("/games", async (req, res) => {
   try {
     const busqueda = req.query.search; // <-- ?search=texto
@@ -41,7 +41,7 @@ app.get("/games", async (req, res) => {
   }
 });
 
-// 📦 Obtener un solo juego por su ID
+//Obtener un solo juego por su ID
 app.get("/games/:id", async (req, res) => {
   try {
     const game = await Game.findById(req.params.id);
@@ -66,6 +66,9 @@ app.post("/games", async (req, res) => {
 app.put("/games/:id", async (req, res) => {
   try {
     const actualizado = await Game.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!actualizado) {
+      return res.status(404).json({ mensaje: "Juego no encontrado" });
+    }
     res.json(actualizado);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al actualizar el juego" });
@@ -83,18 +86,29 @@ app.delete("/games/:id", async (req, res) => {
 
 app.post("/games/:id/reviews", async (req, res) => {
   try {
-    const game = await Game.findById(req.params.id);
-    if (!game) return res.status(404).json({ mensaje: "Juego no encontrado" });
+    let { text, rating } = req.body;
+    text = (text || "").toString().trim();
+    rating = Number(rating);
+    if (!text) {
+      return res.status(400).json({ mensaje: "El texto de la reseña es obligatorio" });
+    }
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+      return res.status(400).json({ mensaje: "La valoración debe estar entre 1 y 5" });
+    }
 
-    const { text, rating } = req.body;
-    game.reviews.push({ text, rating });
+    const juego = await Game.findById(req.params.id);
+    if (!juego) {
+      return res.status(404).json({ mensaje: "Juego no encontrado" });
+    }
 
-    // recalcular promedio
-    const total = game.reviews.reduce((acc, r) => acc + r.rating, 0);
-    game.rating = total / game.reviews.length;
+    juego.reviews.push({ text, rating, date: new Date() });
+    // Recalcular promedio
+    const totalRatings = juego.reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0);
+    const averageRating = juego.reviews.length ? totalRatings / juego.reviews.length : 0;
+    juego.rating = Number(averageRating.toFixed(1));
 
-    await game.save();
-    res.json(game);
+    await juego.save();
+    res.status(201).json(juego);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al agregar reseña" });
   }
@@ -106,5 +120,5 @@ app.get(/.*/, (req, res) => {
 
 // servidor activo
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

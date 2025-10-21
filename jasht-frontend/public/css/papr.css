@@ -1,67 +1,70 @@
 /*pagina principal*/
 .barra-superior {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
+
 /*barra de busqueda*/
 #buscar {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #101010;
-  color: #eee;
-  margin-right: 10px;
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #101010;
+    color: #eee;
+    margin-right: 10px;
 }
+
 /*tarjeta de presentacion de juego*/
 .games-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
 }
 
 .game-card {
-  background: #1a1a1a;
-  border-radius: 10px;
-  padding: 10px;
-  cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.4);
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.4);
 }
 
 .game-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .game-card img {
-  width: 100%;
-  height: 150px;
-  border-radius: 8px;
-  object-fit: cover;
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 .game-card .info {
-  text-align: center;
-  margin-top: 10px;
+    text-align: center;
+    margin-top: 10px;
 }
 
 .game-card h2 {
-  margin: 4px 0;
-  font-size: 18px;
-  color: #00adee;
+    margin: 4px 0;
+    font-size: 18px;
+    color: #00adee;
 }
 
 .game-card p {
-  margin: 0;
-  color: #ccc;
+    margin: 0;
+    color: #ccc;
 }
+
 /*estrella pagina principal*/
 .rating-mini {
-  margin-top: 6px;
-  color: #ffd700;
-  font-size: 14px;
+    margin-top: 6px;
+    color: #ffd700;
+    font-size: 14px;
 }
 

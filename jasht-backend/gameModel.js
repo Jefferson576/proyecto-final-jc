@@ -19,8 +19,11 @@ const gameSchema = new mongoose.Schema({
       date: { type: Date, default: Date.now }
     }
   ],
-  completed: { type: Boolean, default: false }
-});
-
+  completed: { type: Boolean, default: false },
+  developer: { type: String },
+  size: { type: String },
+  version: { type: String },
+  year: { type: Number },
+}, { timestamps: true });
 const Game = mongoose.model("Game", gameSchema);
 module.exports = Game;
