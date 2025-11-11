@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb+srv://jeffersonbarrios2008_db_user:10325119489@cluster0.68xphtg.mongodb.net/jogo", {
+    const uri = process.env.MONGO_URI || "mongodb+srv://jeffersonbarrios2008_db_user:10325119489@cluster0.68xphtg.mongodb.net/jogo";
+    await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 5000
     });
     console.log("Conectado a MongoDB Atlas (base: jogo)");

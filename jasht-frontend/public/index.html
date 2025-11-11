@@ -22,6 +22,8 @@
       <a href="/html/insertar.html">Agregar juego</a>
       <a href="/html/estadisticas.html">Estadísticas</a>
     </nav>
+    <div id="user-info" class="user-info"></div>
+    <button id="logout-btn">Cerrar sesión</button>
   </header>
 
   <!-- MAIN -->
@@ -29,7 +31,6 @@
     <div class="barra-superior">
       <input type="text" id="buscar" placeholder="Buscar juego..." />
       <button id="agregar" onclick="window.location.href='/html/insertar.html'"> Agregar juego</button>
-
     </div>
 
     <div id="games-container" class="games-container">
@@ -37,7 +38,7 @@
     </div>
   </main>
 
-  <!-- Modal de edición de juego -->
+  <!-- edición de juego -->
   <div id="modal-editar" class="modal">
     <div class="modal-contenido">
       <h2>Editar juego</h2>
@@ -50,6 +51,9 @@
 
       <label for="edit-categoria">Categoría:</label>
       <input type="text" id="edit-categoria" placeholder="Categoría">
+
+      <label for="edit-horas">Horas jugadas:</label>
+      <input type="number" id="edit-horas" placeholder="Horas jugadas">
 
       <div class="modal-botones">
         <button id="guardar-edicion">Guardar</button>

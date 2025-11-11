@@ -1,39 +1,171 @@
-// servidor.js
+require("dotenv").config();
 const express = require("express");
-const path = require("path");
-const connectDB = require("./mongoose");
+const connectDB = require("./mongoose"); 
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const Game = require("./gameModel");
+const User = require("./models/User");
+const path = require("path");
 
-const app = express();
-const PORT = 3000;
 
-// conectar a MongoDB
 connectDB();
 
-// middlewares
+const app = express();
+app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../jasht-frontend/public")));
+// Si el body JSON llega malformado, responder en JSON en lugar de HTML
+app.use((err, req, res, next) => {
+  if (err && err.type === "entity.parse.failed") {
+    return res.status(400).json({
+      mensaje: "JSON inválido en la solicitud",
+      detalle: err.message,
+    });
+  }
+  next(err);
+});
 
-// rutas
-// Obtener todos los juegos o filtrarlos por nombre o categoría
-app.get("/games", async (req, res) => {
+// MIDDLEWARE Y CONFIGURACIÓN 
+const SECRET_KEY = process.env.SECRET_KEY || "changeme-dev-secret";
+
+// Middleware de verificación JWT
+function verificarToken(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ mensaje: "Token requerido" });
+
   try {
-    const busqueda = req.query.search; // <-- ?search=texto
-    let games;
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(403).json({ mensaje: "Token inválido o expirado" });
+  }
+}
 
-    if (busqueda) {
-      // Buscar por nombre o categoría (sin importar mayúsculas)
-      games = await Game.find({
-        $or: [
-          { title: new RegExp(busqueda, "i") },
-          { category: new RegExp(busqueda, "i") },
-        ],
-      });
-    } else {
-      // Si no hay búsqueda, mostrar todos
-      games = await Game.find();
+//RUTAS DE API
+
+// Registro de usuario
+app.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const existe = await User.findOne({ email });
+    if (existe) {
+      return res.status(400).json({ mensaje: "El correo ya está registrado" });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const nuevoUsuario = new User({ username, email, password: hashedPassword });
+    await nuevoUsuario.save();
+
+    res.status(201).json({ mensaje: "Usuario registrado exitosamente" });
+  } catch (error) {
+    console.error("Error al registrar usuario:", error);
+    res.status(500).json({ mensaje: "Error al registrar usuario" });
+  }
+});
+
+// Inicio de sesión
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const usuario = await User.findOne({ email });
+
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    const esValido = await bcrypt.compare(password, usuario.password);
+    if (!esValido) {
+      return res.status(401).json({ mensaje: "Contraseña incorrecta" });
+    }
+
+    const token = jwt.sign(
+      { id: usuario._id, email: usuario.email, username: usuario.username },
+      SECRET_KEY,
+      { expiresIn: "11h" } // 11 horas de acceso después de iniciar sesión
+    );
+
+    res.json({ mensaje: "Inicio de sesión exitoso", token });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    res.status(500).json({ mensaje: "Error al iniciar sesión" });
+  }
+});
+
+// Recuperación de contraseña: solicitar enlace
+app.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ mensaje: "Correo requerido" });
+
+    const usuario = await User.findOne({ email });
+    // Para privacidad, no revelamos si existe o no; siempre respondemos OK
+    if (!usuario) {
+      return res.json({ mensaje: "Si el correo existe, se envió un enlace de recuperación" });
+    }
+
+    const resetToken = jwt.sign({ id: usuario._id, purpose: "reset" }, SECRET_KEY, { expiresIn: "15m" });
+    const resetUrl = `${req.protocol}://${req.get("host")}/html/reset.html?token=${resetToken}`;
+    // En un sistema real, aquí se enviaría por correo; devolvemos la URL para pruebas
+    return res.json({ mensaje: "Enlace de recuperación generado", url: resetUrl, token: resetToken });
+  } catch (error) {
+    console.error("Error en forgot-password:", error);
+    res.status(500).json({ mensaje: "Error al generar enlace de recuperación" });
+  }
+});
+
+// Recuperación de contraseña: establecer nueva contraseña
+app.post("/reset-password", async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    if (!token || !password) return res.status(400).json({ mensaje: "Token y nueva contraseña requeridos" });
+    if (typeof password !== "string" || password.length < 6) {
+      return res.status(400).json({ mensaje: "La contraseña debe tener al menos 6 caracteres" });
+    }
+
+    let payload;
+    try {
+      payload = jwt.verify(token, SECRET_KEY);
+    } catch (err) {
+      return res.status(403).json({ mensaje: "Token inválido o expirado" });
+    }
+    if (!payload || payload.purpose !== "reset" || !payload.id) {
+      return res.status(403).json({ mensaje: "Token de recuperación inválido" });
+    }
+
+    const usuario = await User.findById(payload.id);
+    if (!usuario) return res.status(404).json({ mensaje: "Usuario no encontrado" });
+
+    usuario.password = password; // se encripta en userSchema.pre 
+    await usuario.save();
+
+    return res.json({ mensaje: "Contraseña actualizada. Ahora puedes iniciar sesión." });
+  } catch (error) {
+    console.error("Error en reset-password:", error);
+    res.status(500).json({ mensaje: "Error al restablecer la contraseña" });
+  }
+});
+
+// ARCHIVOS ESTÁTICOS
+const STATIC_DIR = path.join(__dirname, "../jasht-frontend/public");
+console.log("Static dir:", STATIC_DIR);
+app.use(express.static(STATIC_DIR));
+
+// RUTAS DE JUEGOS
+// Obtener solo los juegos del usuario autenticado
+app.get("/games", verificarToken, async (req, res) => {
+  try {
+    const busqueda = req.query.search;
+    const filtro = { user: req.user.id };
+
+    if (busqueda) {
+      filtro.$or = [
+        { title: new RegExp(busqueda, "i") },
+        { category: new RegExp(busqueda, "i") },
+      ];
+    }
+
+    const games = await Game.find(filtro);
     res.json(games);
   } catch (error) {
     console.error("Error al obtener juegos:", error);
@@ -41,84 +173,82 @@ app.get("/games", async (req, res) => {
   }
 });
 
-//Obtener un solo juego por su ID
-app.get("/games/:id", async (req, res) => {
+// Obtener detalles de un juego por ID (del usuario autenticado)
+app.get("/games/:id", verificarToken, async (req, res) => {
   try {
-    const game = await Game.findById(req.params.id);
-    if (!game) return res.status(404).json({ mensaje: "Juego no encontrado" });
-    res.json(game);
+    const juego = await Game.findOne({ _id: req.params.id, user: req.user.id });
+    if (!juego) {
+      return res.status(404).json({ mensaje: "Juego no encontrado o sin permiso" });
+    }
+    res.json(juego);
   } catch (error) {
-    console.error("Error al obtener el juego:", error);
+    console.error("Error al obtener juego por id:", error);
+    // Si el ID no tiene formato válido, devolvemos 400 claro
+    if (error.name === "CastError") {
+      return res.status(400).json({ mensaje: "ID de juego inválido" });
+    }
     res.status(500).json({ mensaje: "Error al obtener el juego" });
   }
 });
 
-app.post("/games", async (req, res) => {
+// Crear un nuevo juego vinculado al usuario
+app.post("/games", verificarToken, async (req, res) => {
   try {
-    const nuevo = new Game(req.body);
-    await nuevo.save();
-    res.status(201).json(nuevo);
+    const nuevoJuego = new Game({ ...req.body, user: req.user.id });
+    await nuevoJuego.save();
+    res.status(201).json(nuevoJuego);
   } catch (error) {
+    console.error("Error al agregar el juego:", error);
     res.status(500).json({ mensaje: "Error al agregar el juego" });
   }
 });
 
-app.put("/games/:id", async (req, res) => {
+// Editar juego
+app.put("/games/:id", verificarToken, async (req, res) => {
   try {
-    const actualizado = await Game.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!actualizado) {
-      return res.status(404).json({ mensaje: "Juego no encontrado" });
-    }
-    res.json(actualizado);
+    const juego = await Game.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      req.body,
+      { new: true }
+    );
+    if (!juego)
+      return res.status(404).json({ mensaje: "Juego no encontrado o sin permiso" });
+    res.json(juego);
   } catch (error) {
-    res.status(500).json({ mensaje: "Error al actualizar el juego" });
+    console.error("Error al editar el juego:", error);
+    res.status(500).json({ mensaje: "Error al editar el juego" });
   }
 });
 
-app.delete("/games/:id", async (req, res) => {
+// Eliminar juego
+app.delete("/games/:id", verificarToken, async (req, res) => {
   try {
-    await Game.findByIdAndDelete(req.params.id);
-    res.json({ mensaje: "Juego eliminado" });
+    const eliminado = await Game.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+    if (!eliminado)
+      return res.status(404).json({ mensaje: "Juego no encontrado o sin permiso" });
+    res.json({ mensaje: "Juego eliminado correctamente" });
   } catch (error) {
-    res.status(500).json({ mensaje: "Error al eliminar el juego" });
+    console.error("Error al eliminar juego:", error);
+    res.status(500).json({ mensaje: "Error al eliminar juego" });
   }
 });
 
-app.post("/games/:id/reviews", async (req, res) => {
-  try {
-    let { text, rating } = req.body;
-    text = (text || "").toString().trim();
-    rating = Number(rating);
-    if (!text) {
-      return res.status(400).json({ mensaje: "El texto de la reseña es obligatorio" });
-    }
-    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
-      return res.status(400).json({ mensaje: "La valoración debe estar entre 1 y 5" });
-    }
+// Servidor
 
-    const juego = await Game.findById(req.params.id);
-    if (!juego) {
-      return res.status(404).json({ mensaje: "Juego no encontrado" });
-    }
-
-    juego.reviews.push({ text, rating, date: new Date() });
-    // Recalcular promedio
-    const totalRatings = juego.reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0);
-    const averageRating = juego.reviews.length ? totalRatings / juego.reviews.length : 0;
-    juego.rating = Number(averageRating.toFixed(1));
-
-    await juego.save();
-    res.status(201).json(juego);
-  } catch (error) {
-    res.status(500).json({ mensaje: "Error al agregar reseña" });
-  }
+// Ruta raíz pasa a login
+app.get("/", (req, res) => {
+  res.redirect("/html/login.html");
 });
 
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "../jasht-frontend/public/index.html"));
+// Devolvemos 404 JSON para cualquier ruta no definida explícitamente.
+app.use((req, res) => {
+  res.status(404).json({ mensaje: "Ruta no encontrada" });
 });
 
-// servidor activo
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

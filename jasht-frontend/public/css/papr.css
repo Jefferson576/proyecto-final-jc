@@ -1,7 +1,9 @@
 /*pagina principal*/
+
 header {
-  text-align: center;
-  margin: 0px 0;
+  background: linear-gradient(to bottom, #000000, #d9d9d9);
+  padding: 10px 0;
+  border-bottom: 3px solid #0e1120;
 }
 .barra-superior {
     display: flex;
@@ -109,4 +111,15 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+#logout-btn
+ {
+  padding: 2px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #00adee;
+  color: white;
+  cursor: pointer;
 }

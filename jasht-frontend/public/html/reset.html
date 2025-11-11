@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Restablecer contraseña | JASHT STORE</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <div class="logo">
+          <img src="../img/logo.png" alt="Logo" width="60" height="60" />
+        </div>
+        <h1>JASHT STORE</h1>
+      </div>
+    </header>
+    <main class="page-wrap">
+      <h2>Restablecer contraseña</h2>
+      <p>Ingresa tu nueva contraseña. Este enlace expira tras 15 minutos.</p>
+      <form id="resetForm">
+        <input type="password" id="password" placeholder="Nueva contraseña" required />
+        <input type="password" id="confirm" placeholder="Confirmar contraseña" required />
+        <button type="submit" class="actualizar-btn">Actualizar contraseña</button>
+      </form>
+      <p id="mensaje"></p>
+      <button class="volver-btn" onclick="window.location.href='/html/login.html'">&#8592; Volver</button>
+    </main>
+    <script src="/js/reset.js"></script>
+  </body>
+</html>

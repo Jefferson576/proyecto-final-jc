@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar sesión | JASHT STORE</title>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+        <header>
+            <div class="header-inner">
+                <div class="logo">
+                    <img src="../img/logo.png" alt="Logo JASHT" width="60" height="60">
+                </div>
+                <h1>JASHT STORE</h1>
+            </div>
+        </header>
+<body>
+  <div class="login-container">
+    <h2>Iniciar sesión</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Correo electrónico" required>
+      <input type="password" id="password" placeholder="Contraseña" required>
+      <button type="submit" class="login-btn">Entrar</button>
+      <p>¿No tienes cuenta? <a href="register.html" class="registro-btn">Regístrate</a></p>
+      <p>¿Olvidaste tu contraseña? <a href="forgot.html" class="recuperar-btn">Recupérala aquí</a></p>
+    </form>
+    <p id="mensaje"></p>
+  </div>
+  <script src="../js/login.js"></script>
+</body>
+</html>

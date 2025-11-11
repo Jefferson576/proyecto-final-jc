@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Recuperar contraseña | JASHT STORE</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <div class="logo">
+          <img src="../img/logo.png" alt="Logo" width="60" height="60" />
+        </div>
+        <h1>JASHT STORE</h1>
+      </div>
+    </header>
+    <main class="page-wrap">
+      <h2>Recuperar contraseña</h2>
+      <p>Ingresa tu correo y te enviaremos un enlace para restablecerla.</p>
+      <form id="forgotForm">
+        <input type="email" id="email" placeholder="Correo electrónico" required />
+        <button type="submit" class="enviar-btn">Enviar enlace</button>
+      </form>
+      <p id="mensaje"></p>
+      <div id="reset-link" style="margin-top: 10px;"></div>
+      <button class="volver-btn" onclick="window.location.href='/html/login.html'">&#8592; Volver</button>
+    </main>
+    <script src="/js/forgot.js"></script>
+  </body>
+</html>
