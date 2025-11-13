@@ -35,7 +35,6 @@
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-    position: flex-start;
 }
 
 .delete-btn:hover {
@@ -43,7 +42,7 @@
 }
 
 .game-actions {
-    display: absolute;
+    display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -111,4 +110,30 @@
 
 .btn-enviar:hover {
     background: #008ac2;
+}
+
+@media (max-width: 600px) {
+    .modal-botones {
+        gap: 10px;
+    }
+    
+    /* Responsive improvements for mobile */
+    #agregar {
+        width: 100%;
+        font-size: 18px;
+        padding: 16px;
+        margin-top: 25px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    
+    .btn-volver,
+    .volver {
+        width: 100%;
+        font-size: 18px;
+        padding: 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
 }

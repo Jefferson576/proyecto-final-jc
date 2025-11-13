@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Iniciar sesión | JASHT STORE</title>
-  <link rel="stylesheet" href="/style.css"/>
+  <link rel="stylesheet" href="/style.css" />
 </head>
-        <header>
-            <div class="header-inner">
-                <div class="logo">
-                    <img src="../img/logo.png" alt="Logo JASHT" width="60" height="60">
-                </div>
-                <h1>JASHT STORE</h1>
-            </div>
-        </header>
+<header class="main-header">
+  <div class="header-inner">
+    <div class="logo">
+      <img src="../img/logo.png" alt="Logo JASHT" width="60" height="60">
+    </div>
+    <h1>JASHT STORE</h1>
+  </div>
+  <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+  <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
+  <nav class="menu">
+    <a href="/index.html">Inicio</a>
+    <a href="/html/register.html">Registrar</a>
+    <a href="/html/forgot.html">Recuperar contraseña</a>
+    <div class="menu-meta">
+      <div id="user-info" class="user-info"></div>
+      <button id="logout-btn">Cerrar sesión</button>
+    </div>
+  </nav>
+</header>
+
 <body>
   <div class="login-container">
     <h2>Iniciar sesión</h2>
@@ -26,5 +39,26 @@
     <p id="mensaje"></p>
   </div>
   <script src="../js/login.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var token = localStorage.getItem('token');
+      var ui = document.getElementById('user-info');
+      var lb = document.getElementById('logout-btn');
+      if (ui && token) {
+        try {
+          var datos = JSON.parse(atob(token.split('.')[1]));
+          ui.textContent = ' ' + (datos.email || datos.username || '');
+        } catch (e) { }
+      }
+      if (lb) {
+        if (!token) lb.style.display = 'none';
+        lb.addEventListener('click', function () {
+          localStorage.removeItem('token');
+          window.location.href = '/html/login.html';
+        });
+      }
+    });
+  </script>
 </body>
+
 </html>

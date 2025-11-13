@@ -205,3 +205,27 @@ header h1 {
         width: 100%;
     }
 }
+
+@media (max-width: 600px) {
+    .page-wrap {
+        padding: 0 12px;
+        margin: 16px auto;
+    }
+    .detalle-pagina {
+        padding: 18px;
+        border-radius: 10px;
+    }
+    .info-principal h2 {
+        font-size: 1.5rem;
+    }
+    .review-form {
+        gap: 8px;
+    }
+    .rating-stars label {
+        font-size: 24px;
+    }
+    #review-text {
+        min-height: 70px;
+        font-size: 14px;
+    }
+}

@@ -56,6 +56,20 @@
   cursor: pointer;
 }
 
+/* Improve input placeholder visibility */
+#username::placeholder, #email::placeholder, #password::placeholder, #confirmPassword::placeholder, #confirm::placeholder {
+  color: #aaa;
+  font-size: 16px;
+  opacity: 1;
+}
+
+/* Focus states for better accessibility */
+#username:focus, #email:focus, #password:focus, #confirmPassword:focus, #confirm:focus {
+  outline: 2px solid #00adee;
+  outline-offset: 2px;
+  background-color: #333;
+}
+
 
 #confirm {
   padding: 12px;
@@ -75,4 +89,59 @@
   background-color: #00adee;
   color: white;
   cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .login-container {
+    max-width: 92%;
+    margin: 20px auto;
+    padding: 25px 20px;
+  }
+  .login-btn,
+  .actualizar-btn,
+  .enviar-btn,
+  .volver-btn {
+    width: 100%;
+    font-size: 18px;
+    padding: 16px;
+    margin-top: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  #username, #email, #password, #confirmPassword, #confirm {
+    font-size: 18px;
+    padding: 16px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    background-color: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  .page-wrap {
+    padding: 20px 16px;
+    max-width: 100%;
+  }
+  .page-wrap h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .page-wrap p {
+    font-size: 16px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+    text-align: center;
+  }
+  #resetForm {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  #mensaje {
+    font-size: 16px;
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+  }
 }

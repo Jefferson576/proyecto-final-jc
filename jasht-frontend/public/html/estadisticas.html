@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Estadísticas Personales - JASHT</title>
-        <link rel="stylesheet" href="/style.css"/>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </head>
-    <body>
-        <header>
-            <h1>🎮 Estadísticas Personales</h1>
-            <button class="btn-volver" onclick="window.location.href='/index.html'">&#8592;Volver</button>
-        </header>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas Personales - JASHT</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-inner">
+            <div class="logo">
+                <img src="../img/logo.png" alt="Logo" width="60" height="60" />
+            </div>
+            <h1>JASHT STORE</h1>
+        </div>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+        <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
+        <nav class="menu">
+            <a href="/index.html">Inicio</a>
+            <a href="/html/insertar.html">Agregar juego</a>
+            <a href="/html/estadisticas.html">Estadísticas</a>
+            <div class="menu-meta">
+                <div id="user-info" class="user-info"></div>
+                <button id="logout-btn">Cerrar sesión</button>
+            </div>
+        </nav>
+    </header>
+    <main class="page-wrap">
         <section class="estadisticas-container">
             <div class="stats-totales">
                 <h2>Resumen general</h2>
@@ -40,6 +58,28 @@
                 </div>
             </div>
         </section>
+    </main>
     <script src="/js/estadisticas.js"></script>
-    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var token = localStorage.getItem('token');
+            var ui = document.getElementById('user-info');
+            var lb = document.getElementById('logout-btn');
+            if (ui && token) {
+                try {
+                    var datos = JSON.parse(atob(token.split('.')[1]));
+                    ui.textContent = ' ' + (datos.email || datos.username || '');
+                } catch (e) { }
+            }
+            if (lb) {
+                if (!token) lb.style.display = 'none';
+                lb.addEventListener('click', function () {
+                    localStorage.removeItem('token');
+                    window.location.href = '/html/login.html';
+                });
+            }
+        });
+    </script>
+</body>
+
 </html>

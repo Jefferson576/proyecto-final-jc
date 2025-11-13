@@ -40,3 +40,61 @@
 .formulario-juego button:hover {
     background: #008ac2;
 }
+
+/* Improve input placeholder visibility and focus states */
+.formulario-juego input::placeholder, .formulario-juego textarea::placeholder {
+    color: #aaa;
+    opacity: 1;
+    font-size: 16px;
+}
+
+.formulario-juego input:focus, .formulario-juego textarea:focus {
+    outline: 2px solid #00adee;
+    outline-offset: 2px;
+    background-color: #1a1a1a;
+    border-color: #00adee;
+}
+
+@media (max-width: 600px) {
+    .formulario-juego {
+        max-width: 92%;
+        padding: 25px 20px;
+        margin: 20px auto;
+    }
+    .formulario-juego label {
+        font-size: 18px;
+        margin-top: 20px;
+        margin-bottom: 8px;
+        color: #00adee;
+        font-weight: 600;
+    }
+    .formulario-juego input, .formulario-juego textarea {
+        font-size: 18px;
+        padding: 16px;
+        margin-top: 8px;
+        background-color: #2a2a2a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: white;
+    }
+    .formulario-juego textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    .formulario-juego button {
+        width: 100%;
+        font-size: 18px;
+        padding: 16px;
+        margin-top: 25px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .formulario-juego input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+    .formulario-juego input[type="number"] {
+        font-size: 18px;
+    }
+}
