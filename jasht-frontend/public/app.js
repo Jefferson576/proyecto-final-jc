@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <img src="${imagen}" alt="${escapeHtml(juego.title || 'Juego')}">
         <div class="info">
           <h2>${escapeHtml(juego.title || "Sin título")}</h2>
-          <p>${escapeHtml((juego.description || "").slice(0, 130))}${
-        juego.description && juego.description.length > 130 ? "..." : ""
+          <p>${escapeHtml((juego.description || "").slice(0, 500))}${
+        juego.description && juego.description.length > 500 ? "..." : ""
       }</p>
           <p><strong>Categoría:</strong> ${escapeHtml(juego.category || "Desconocida")}</p>
           <p><strong>Horas jugadas:</strong> ${juego.hoursPlayed ?? 0}</p>

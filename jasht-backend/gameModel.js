@@ -24,7 +24,6 @@ const gameSchema = new mongoose.Schema({
   size: { type: String },
   version: { type: String },
   year: { type: Number },
-
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 }, { timestamps: true });
 const Game = mongoose.model("Game", gameSchema);

@@ -3,10 +3,16 @@
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-    background: #1a1a4e;
+    background-color: #0c1410;
+    background-image:
+        radial-gradient(1200px 600px at 50% -10%, rgba(0, 0, 0, 0.35), transparent 60%),
+        linear-gradient(180deg, #0b1a12 0%, #0e1f16 50%, #000000 100%);
+    background-repeat: no-repeat, no-repeat;
+    background-attachment: fixed, fixed;
     color: #e6e6e6;
     -webkit-font-smoothing: antialiased;
 }
@@ -78,11 +84,15 @@ header h1 {
 }
 
 /* secciones */
-.descripcion, .extra-info, .reseñas {
+.descripcion,
+.extra-info,
+.reseñas {
     margin-top: 26px;
 }
 
-.descripcion h3, .extra-info h3, .reseñas h3 {
+.descripcion h3,
+.extra-info h3,
+.reseñas h3 {
     color: #00adee;
     margin: 0 0 10px 0;
 }
@@ -169,7 +179,8 @@ header h1 {
     user-select: none;
 }
 
-.rating-stars label:hover, .rating-stars label:hover~label {
+.rating-stars label:hover,
+.rating-stars label:hover~label {
     color: #ffea00;
 }
 

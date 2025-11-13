@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const connectDB = require("./mongoose"); 
+const connectDB = require("./mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -53,8 +53,7 @@ app.post("/register", async (req, res) => {
       return res.status(400).json({ mensaje: "El correo ya está registrado" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const nuevoUsuario = new User({ username, email, password: hashedPassword });
+    const nuevoUsuario = new User({ username, email, password });
     await nuevoUsuario.save();
 
     res.status(201).json({ mensaje: "Usuario registrado exitosamente" });
@@ -74,7 +73,7 @@ app.post("/login", async (req, res) => {
       return res.status(400).json({ mensaje: "Usuario no encontrado" });
     }
 
-    const esValido = await bcrypt.compare(password, usuario.password);
+    const esValido = await usuario.compararPassword(password);
     if (!esValido) {
       return res.status(401).json({ mensaje: "Contraseña incorrecta" });
     }
@@ -145,11 +144,6 @@ app.post("/reset-password", async (req, res) => {
     res.status(500).json({ mensaje: "Error al restablecer la contraseña" });
   }
 });
-
-// ARCHIVOS ESTÁTICOS
-const STATIC_DIR = path.join(__dirname, "../jasht-frontend/public");
-console.log("Static dir:", STATIC_DIR);
-app.use(express.static(STATIC_DIR));
 
 // RUTAS DE JUEGOS
 // Obtener solo los juegos del usuario autenticado
@@ -235,6 +229,34 @@ app.delete("/games/:id", verificarToken, async (req, res) => {
     res.status(500).json({ mensaje: "Error al eliminar juego" });
   }
 });
+// Añadir reseña a juego
+app.post("/games/:id/reviews", verificarToken, async (req, res) => {
+  try {
+    const { text, rating } = req.body;
+    const t = typeof text === "string" ? text.trim() : "";
+    const r = Number(rating);
+    if (!t) return res.status(400).json({ mensaje: "Reseña requerida" });
+    if (!Number.isFinite(r) || r < 1 || r > 5) return res.status(400).json({ mensaje: "Rating inválido" });
+
+    const juego = await Game.findOne({ _id: req.params.id, user: req.user.id });
+    if (!juego) return res.status(404).json({ mensaje: "Juego no encontrado o sin permiso" });
+
+    juego.reviews.push({ text: t, rating: r });
+    const ratings = juego.reviews.map((x) => (typeof x === "string" ? 5 : (Number(x.rating) || 0)));
+    const avg = ratings.length ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+    juego.rating = Number(avg.toFixed(1));
+    await juego.save();
+    res.json(juego);
+  } catch (error) {
+    console.error("Error al enviar reseña:", error);
+    res.status(500).json({ mensaje: "Error al enviar reseña" });
+  }
+});
+
+// ARCHIVOS ESTÁTICOS
+const STATIC_DIR = path.join(__dirname, "../jasht-frontend/public");
+console.log("Static dir:", STATIC_DIR);
+app.use(express.static(STATIC_DIR));
 
 // Servidor
 
@@ -245,6 +267,7 @@ app.get("/", (req, res) => {
 
 // Devolvemos 404 JSON para cualquier ruta no definida explícitamente.
 app.use((req, res) => {
+  console.warn("404:", req.method, req.originalUrl);
   res.status(404).json({ mensaje: "Ruta no encontrada" });
 });
 
