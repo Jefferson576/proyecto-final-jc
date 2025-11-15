@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
 const connectDB = require("./mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -24,6 +25,18 @@ app.use((err, req, res, next) => {
   }
   next(err);
 });
+
+// Modelo de reseñas compartidas
+const sharedReviewSchema = new mongoose.Schema({
+  key: { type: String, index: true },
+  title: String,
+  developer: String,
+  text: String,
+  rating: { type: Number, min: 1, max: 5 },
+  userEmail: String,
+  createdAt: { type: Date, default: Date.now }
+});
+const SharedReview = mongoose.models.SharedReview || mongoose.model("SharedReview", sharedReviewSchema);
 
 // MIDDLEWARE Y CONFIGURACIÓN 
 const SECRET_KEY = process.env.SECRET_KEY || "changeme-dev-secret";
@@ -167,6 +180,43 @@ app.get("/games", verificarToken, async (req, res) => {
   }
 });
 
+// Catálogo público: obtener juegos sin requerir autenticación
+app.get("/catalog", async (req, res) => {
+  try {
+    const busqueda = req.query.search;
+    const filtro = { $or: [ { user: { $exists: false } }, { user: null } ] };
+    if (busqueda) {
+      filtro.$or = [
+        { user: { $exists: false } },
+        { user: null },
+        { title: new RegExp(busqueda, "i") },
+        { category: new RegExp(busqueda, "i") },
+      ];
+    }
+    const games = await Game.find(filtro)
+      .sort({ createdAt: -1 })
+      .limit(24)
+      .select("title description category image rating createdAt");
+    res.json(games);
+  } catch (error) {
+    console.error("Error en catálogo público:", error);
+    res.status(500).json({ mensaje: "Error al obtener el catálogo" });
+  }
+});
+
+// Reseñas compartidas por clave (title+developer en minúsculas)
+app.get("/shared-reviews", async (req, res) => {
+  try {
+    const key = String(req.query.key || "").trim();
+    if (!key) return res.json([]);
+    const list = await SharedReview.find({ key }).sort({ createdAt: -1 }).limit(50);
+    res.json(list);
+  } catch (error) {
+    console.error("Error en shared-reviews:", error);
+    res.status(500).json({ mensaje: "Error al obtener reseñas compartidas" });
+  }
+});
+
 // Obtener detalles de un juego por ID (del usuario autenticado)
 app.get("/games/:id", verificarToken, async (req, res) => {
   try {
@@ -246,6 +296,15 @@ app.post("/games/:id/reviews", verificarToken, async (req, res) => {
     const avg = ratings.length ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
     juego.rating = Number(avg.toFixed(1));
     await juego.save();
+    const keyBase = `${(juego.title || "").trim().toLowerCase()}|${(juego.developer || "").trim().toLowerCase()}`;
+    await SharedReview.create({
+      key: keyBase,
+      title: juego.title || "",
+      developer: juego.developer || "",
+      text: t,
+      rating: r,
+      userEmail: req.user?.email || ""
+    });
     res.json(juego);
   } catch (error) {
     console.error("Error al enviar reseña:", error);

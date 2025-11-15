@@ -8,54 +8,43 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 
-<body>
-  <header class="main-header">
-    <div class="header-inner">
-      <div class="logo">
-        <img src="../img/logo.png" alt="Logo" width="60" height="60" />
+<body class="auth-page recover-page">
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="form-box animation">
+        <form id="resetForm">
+          <h1>Restablecer contraseña</h1>
+          <span class="hint">Ingresa tu nueva contraseña. Este enlace expira tras 15 minutos.</span>
+          <input type="password" id="password" placeholder="Nueva contraseña" required />
+          <input type="password" id="confirm" placeholder="Confirmar contraseña" required />
+          <button type="submit">Actualizar contraseña</button>
+          <div class="links">
+            <span>¿Volver al login? <a href="/html/login.html">Iniciar sesión</a></span>
+          </div>
+        </form>
+        <p id="mensaje"></p>
       </div>
-      <h1>JASHT STORE</h1>
+      <div class="info-panel">
+        <div class="wrap">
+          <h2>PROTEGE TU CUENTA</h2>
+          <p>Crea una contraseña segura para mantener tu cuenta a salvo.</p>
+        </div>
+      </div>
     </div>
-    <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
-    <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
-    <nav class="menu">
-      <a href="/index.html">Inicio</a>
-      <a href="/html/login.html">Iniciar sesión</a>
-      <div class="menu-meta">
-        <div id="user-info" class="user-info"></div>
-        <button id="logout-btn">Cerrar sesión</button>
-      </div>
-    </nav>
-  </header>
-  <main class="page-wrap">
-    <h2>Restablecer contraseña</h2>
-    <p>Ingresa tu nueva contraseña. Este enlace expira tras 15 minutos.</p>
-    <form id="resetForm">
-      <input type="password" id="password" placeholder="Nueva contraseña" required />
-      <input type="password" id="confirm" placeholder="Confirmar contraseña" required />
-      <button type="submit" class="actualizar-btn">Actualizar contraseña</button>
-    </form>
-    <p id="mensaje"></p>
-    <button class="volver-btn" onclick="window.location.href='/html/login.html'">&#8592; Volver</button>
-  </main>
+  </div>
   <script src="/js/reset.js"></script>
   <script>
     (function () {
       var token = localStorage.getItem('token');
-      var userInfo = document.getElementById('user-info');
-      var logoutBtn = document.getElementById('logout-btn');
+      var userInfo = null;
+      var logoutBtn = null;
       if (userInfo && token) {
-        try {
-          var datos = JSON.parse(atob(token.split('.')[1]));
-          userInfo.textContent = ' ' + (datos.email || datos.username || '');
-        } catch (e) { }
+        try { var datos = JSON.parse(atob(token.split('.')[1])); userInfo.textContent = ' ' + (datos.email || datos.username || ''); } catch (e) { }
       }
       if (logoutBtn) {
-        logoutBtn.addEventListener('click', function () {
-          localStorage.removeItem('token');
-          window.location.href = '/html/login.html';
-        });
+        logoutBtn.addEventListener('click', function () { localStorage.removeItem('token'); window.location.href = '/html/login.html'; });
       }
+      var card = document.querySelector('.auth-card'); if (card) card.classList.add('active');
     })();
   </script>
 </body>

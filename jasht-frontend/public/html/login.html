@@ -3,60 +3,62 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iniciar sesión | JASHT STORE</title>
   <link rel="stylesheet" href="/style.css" />
+  
 </head>
-<header class="main-header">
-  <div class="header-inner">
-    <div class="logo">
-      <img src="../img/logo.png" alt="Logo JASHT" width="60" height="60">
-    </div>
-    <h1>JASHT STORE</h1>
-  </div>
-  <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
-  <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
-  <nav class="menu">
-    <a href="/index.html">Inicio</a>
-    <a href="/html/register.html">Registrar</a>
-    <a href="/html/forgot.html">Recuperar contraseña</a>
-    <div class="menu-meta">
-      <div id="user-info" class="user-info"></div>
-      <button id="logout-btn">Cerrar sesión</button>
-    </div>
-  </nav>
-</header>
 
-<body>
-  <div class="login-container">
-    <h2>Iniciar sesión</h2>
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Correo electrónico" required>
-      <input type="password" id="password" placeholder="Contraseña" required>
-      <button type="submit" class="login-btn">Entrar</button>
-      <p>¿No tienes cuenta? <a href="register.html" class="registro-btn">Regístrate</a></p>
-      <p>¿Olvidaste tu contraseña? <a href="forgot.html" class="recuperar-btn">Recupérala aquí</a></p>
-    </form>
-    <p id="mensaje"></p>
+
+<body class="auth-page login-page">
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="form-box animation">
+        <form id="loginForm">
+          <h1>Iniciar sesión</h1>
+          <span class="hint">Bienvenido de nuevo a JASHT STORE</span>
+          <input type="email" id="email" placeholder="Correo electrónico" required>
+          <input type="password" id="password" placeholder="Contraseña" required>
+          <button type="submit">Entrar</button>
+          <div class="links">
+            <span>¿No tienes cuenta? <a href="register.html">Regístrate</a></span><br>
+            <span>¿Olvidaste tu contraseña? <a href="forgot.html">Recupérala aquí</a></span>
+          </div>
+        </form>
+        <p id="mensaje"></p>
+      </div>
+      <div class="info-panel">
+        <div class="wrap">
+          <h2>¡BIENVENIDO DE NUEVO!</h2>
+          <p>Nos alegra tenerte nuevamente. Si necesitas ayuda, estamos aquí para ayudarte.</p>
+        </div>
+      </div>
+  </div>
+  </div>
+  <div class="auth-extra">
+    <div class="auth-card" style="margin-top:24px;">
+      <div class="form-box" style="grid-column: 1 / -1;">
+        <h1>Todos los juegos</h1>
+        <span class="hint">Explora algunos títulos destacados</span>
+        <div id="games-showcase" class="carousel-showcase"></div>
+      </div>
+    </div>
   </div>
   <script src="../js/login.js"></script>
+  <script src="/js/showcase.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var token = localStorage.getItem('token');
-      var ui = document.getElementById('user-info');
-      var lb = document.getElementById('logout-btn');
+      var ui = null;
+      var lb = null;
       if (ui && token) {
-        try {
-          var datos = JSON.parse(atob(token.split('.')[1]));
-          ui.textContent = ' ' + (datos.email || datos.username || '');
-        } catch (e) { }
+        try { var datos = JSON.parse(atob(token.split('.')[1])); ui.textContent = ' ' + (datos.email || datos.username || ''); } catch (e) {}
       }
       if (lb) {
         if (!token) lb.style.display = 'none';
-        lb.addEventListener('click', function () {
-          localStorage.removeItem('token');
-          window.location.href = '/html/login.html';
-        });
+        lb.addEventListener('click', function () { localStorage.removeItem('token'); window.location.href = '/html/login.html'; });
       }
+      var card = document.querySelector('.auth-card'); if (card) card.classList.add('active');
     });
   </script>
 </body>

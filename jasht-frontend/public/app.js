@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("modal-editar");
   const closeBtn = document.querySelector(".close");
   const token = localStorage.getItem("token");
-  const API_URL = window.location.origin;
+  const API_URL = (window.location.port === '8080' ? 'http://localhost:3000' : window.location.origin);
   let juegosCache = [];
 
   // Si no hay token, redirige al login
@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <img src="${imagen}" alt="${escapeHtml(juego.title || 'Juego')}">
         <div class="info">
           <h2>${escapeHtml(juego.title || "Sin título")}</h2>
-          <p>${escapeHtml((juego.description || "").slice(0, 500))}${
-        juego.description && juego.description.length > 500 ? "..." : ""
+          <p>${escapeHtml((juego.description || "").slice(0, 150))}${
+        juego.description && juego.description.length > 150 ? "..." : ""
       }</p>
           <p><strong>Categoría:</strong> ${escapeHtml(juego.category || "Desconocida")}</p>
           <p><strong>Horas jugadas:</strong> ${juego.hoursPlayed ?? 0}</p>

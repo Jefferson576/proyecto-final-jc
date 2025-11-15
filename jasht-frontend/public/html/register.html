@@ -6,60 +6,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrarse | JASHT STORE</title>
   <link rel="stylesheet" href="/style.css">
+  
 </head>
 
-<body>
-  <header class="main-header">
-    <div class="header-inner">
-      <div class="logo">
-        <img src="../img/logo.png" alt="Logo" width="60" height="60" />
-      </div>
-      <h1>JASHT STORE</h1>
-    </div>
-    <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
-    <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
-    <nav class="menu">
-      <a href="/index.html">Inicio</a>
-      <a href="/html/login.html">Iniciar sesión</a>
-      <div class="menu-meta">
-        <div id="user-info" class="user-info"></div>
-        <button id="logout-btn">Cerrar sesión</button>
-      </div>
-    </nav>
-  </header>
+<body class="auth-page register-page">
 
-  <div class="auth-container">
-    <h2>Crear cuenta</h2>
-    <form id="registerForm">
-      <input type="text" id="username" placeholder="Nombre de usuario" required>
-      <input type="email" id="email" placeholder="Correo electrónico" required>
-      <input type="password" id="password" placeholder="Contraseña" required>
-      <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
-      <button type="submit" class="enviar-btn">Registrarme</button>
-      <p>¿Ya tienes cuenta? <a href="login.html" class="login-btn">Inicia sesión</a></p>
-    </form>
-    <p id="mensaje"></p>
+
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="info-panel">
+        <div class="wrap">
+          <h2>JOIN US!</h2>
+          <p>Create your account to start enjoying JASHT STORE.</p>
+  </div>
+  </div>
+
+  <div class="auth-extra">
+    <div class="auth-card" style="margin-top:24px;">
+      <div class="form-box" style="grid-column: 1 / -1;">
+        <h1>Todos los juegos</h1>
+        <span class="hint">Explora algunos títulos destacados</span>
+        <div id="games-showcase" class="games-container"></div>
+      </div>
+    </div>
+  </div>
+      <div class="form-box animation">
+        <form id="registerForm">
+          <h1>Sign Up</h1>
+          <span class="hint">Crea tu cuenta</span>
+          <input type="text" id="username" placeholder="Nombre de usuario" required>
+          <input type="email" id="email" placeholder="Correo electrónico" required>
+          <input type="password" id="password" placeholder="Contraseña" required>
+          <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
+          <button type="submit">Registrarme</button>
+          <div class="links">
+            <span>¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></span>
+          </div>
+        </form>
+        <p id="mensaje"></p>
+      </div>
+    </div>
   </div>
 
   <script src="../js/register.js"></script>
+  <script src="/js/showcase.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var token = localStorage.getItem('token');
-      var ui = document.getElementById('user-info');
-      var lb = document.getElementById('logout-btn');
+      var ui = null;
+      var lb = null;
       if (ui && token) {
-        try {
-          var datos = JSON.parse(atob(token.split('.')[1]));
-          ui.textContent = ' ' + (datos.email || datos.username || '');
-        } catch (e) { }
+        try { var datos = JSON.parse(atob(token.split('.')[1])); ui.textContent = ' ' + (datos.email || datos.username || ''); } catch (e) { }
       }
       if (lb) {
         if (!token) lb.style.display = 'none';
-        lb.addEventListener('click', function () {
-          localStorage.removeItem('token');
-          window.location.href = '/html/login.html';
-        });
+        lb.addEventListener('click', function () { localStorage.removeItem('token'); window.location.href = '/html/login.html'; });
       }
+      var card = document.querySelector('.auth-card'); if (card) card.classList.add('active');
     });
   </script>
 </body>

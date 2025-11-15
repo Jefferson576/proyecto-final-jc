@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // placeholder de imagen si no existe
     const placeholder = "https://via.placeholder.com/350x220?text=No+Image";
 
+    const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
     // Cargar datos del juego
     async function cargarJuego() {
         if (!gameId) {
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`/games/${gameId}`, {
+            const res = await fetch(`${API_BASE}/games/${gameId}`, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             });
             if (!res.ok) {
@@ -69,15 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
             ratingEl.textContent = juego.rating ? juego.rating.toFixed(1) : "0.0";
             horasEl.textContent = juego.hoursPlayed ?? 0;
 
-            // Mostrar reseñas
+            // Mostrar reseñas propias y acumular rating
+            let htmlPropias = '';
+            let ownSum = 0, ownCount = 0;
             if (Array.isArray(juego.reviews) && juego.reviews.length > 0) {
-                reviewsList.innerHTML = juego.reviews.map(r => {
+                htmlPropias = juego.reviews.map(r => {
                     if (typeof r === "string") {
+                        ownSum += 5; ownCount += 1;
                         return `<li class="review-item">
                       <span class="review-stars">${'★'.repeat(5)}</span>
                       <span class="review-text">${escapeHtml(r)}</span>
                     </li>`;
                     } else {
+                        const rr = Number(r.rating)||0; ownSum += rr; ownCount += 1;
                         const stars = "&#9733;".repeat(r.rating) + "&#9734;".repeat(5 - r.rating);
                         return `<li class="review-item">
                       <span class="review-stars">${stars}</span>
@@ -86,8 +91,35 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
                 ).join("");
-            } else {
-                reviewsList.innerHTML = '<li class="no-reviews">No hay reseñas aún. Sé el primero en escribir una.</li>';
+            }
+
+            // Reseñas compartidas por clave (title+developer)
+            const keyBase = `${(juego.title || '').trim().toLowerCase()}|${(juego.developer || '').trim().toLowerCase()}`;
+            let htmlCompartidas = '';
+            let sharedSum = 0, sharedCount = 0;
+            try {
+                const resShared = await fetch(`${API_BASE}/shared-reviews?key=${encodeURIComponent(keyBase)}`);
+                if (resShared.ok) {
+                    const shared = await resShared.json();
+                    if (Array.isArray(shared) && shared.length) {
+                        htmlCompartidas = shared.map(r => {
+                            const rr = Number(r.rating)||0;
+                            sharedSum += rr; sharedCount += 1;
+                            const stars = "&#9733;".repeat(rr) + "&#9734;".repeat(5 - rr);
+                            return `<li class="review-item"><span class="review-stars">${stars}</span><span class="review-text">${escapeHtml(r.text||'')}</span></li>`;
+                        }).join('');
+                    }
+                }
+            } catch (_e) {}
+
+            const finalHtml = [htmlPropias, htmlCompartidas].filter(Boolean).join('');
+            reviewsList.innerHTML = finalHtml || '<li class="no-reviews">No hay reseñas aún. Sé el primero en escribir una.</li>';
+
+            // Actualizar puntuación con promedio global (propias + compartidas)
+            const totalCount = ownCount + sharedCount;
+            if (totalCount > 0) {
+                const avgGlobal = (ownSum + sharedSum) / totalCount;
+                ratingEl.textContent = Number(avgGlobal).toFixed(1);
             }
 
         } catch (err) {
@@ -116,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`/games/${gameId}/reviews`, {
+            const res = await fetch(`${API_BASE}/games/${gameId}/reviews`, {
 
                 method: "POST",
                 headers: {
@@ -147,7 +179,24 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Actualizar puntuación mostrada
-            ratingEl.textContent = updated.rating ? (Number(updated.rating).toFixed(1)) : ratingEl.textContent;
+            // Recalcular con reseñas compartidas
+            try {
+                const keyBase2 = `${(updated.title || '').trim().toLowerCase()}|${(updated.developer || '').trim().toLowerCase()}`;
+                const resShared2 = await fetch(`${API_BASE}/shared-reviews?key=${encodeURIComponent(keyBase2)}`);
+                let sharedSum2 = 0, sharedCount2 = 0;
+                if (resShared2.ok) {
+                    const shared2 = await resShared2.json();
+                    if (Array.isArray(shared2)) {
+                        shared2.forEach(r => { sharedSum2 += Number(r.rating)||0; sharedCount2 += 1; });
+                    }
+                }
+                const ownRatings = Array.isArray(updated.reviews) ? updated.reviews.map(r => (typeof r === 'string' ? 5 : Number(r.rating)||0)) : [];
+                const ownSum2 = ownRatings.reduce((a,b)=>a+b,0);
+                const ownCount2 = ownRatings.length;
+                const total2 = ownCount2 + sharedCount2;
+                const avg2 = total2 ? (ownSum2 + sharedSum2)/total2 : (updated.rating || 0);
+                ratingEl.textContent = Number(avg2).toFixed(1);
+            } catch(_e) {}
 
             // limpiar
             reviewText.value = "";

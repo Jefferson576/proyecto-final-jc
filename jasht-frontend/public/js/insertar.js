@@ -48,7 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(`/games`, {
+            const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
+            const res = await fetch(`${API_BASE}/games`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

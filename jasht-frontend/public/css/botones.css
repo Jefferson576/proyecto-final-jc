@@ -49,6 +49,21 @@
     margin-top: 10px;
 }
 
+.save-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.save-btn:disabled {
+    background-color: #3b3b3b;
+    color: #cfcfcf;
+    cursor: default;
+}
+
 .modal-botones {
     display: flex;
     justify-content: space-between;

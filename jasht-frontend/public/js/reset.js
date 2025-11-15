@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const base = window.location.origin;
+      const base = (window.location.port === '8080' ? 'http://localhost:3000' : window.location.origin);
       const respuesta = await fetch(`${base}/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

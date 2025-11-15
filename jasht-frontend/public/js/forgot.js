@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     try {
-      const REQUEST_URL = "/forgot-password"; // usar ruta relativa para asegurar mismo origen
+      const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
+      const REQUEST_URL = `${API_BASE}/forgot-password`;
       console.log("[forgot] POST", REQUEST_URL);
       const respuesta = await fetch(REQUEST_URL, {
         method: "POST",

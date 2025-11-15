@@ -14,7 +14,8 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   }
 
   try {
-    const res = await fetch("/register", {
+    const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
+    const res = await fetch(`${API_BASE}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
