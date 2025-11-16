@@ -27,6 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="rating-mini">&#9733 ${(juego.rating?Number(juego.rating).toFixed(1):'0.0')}/5</div>
         </div>
       `;
+      const imgEl = card.querySelector('img');
+      if (imgEl){
+        imgEl.loading = 'lazy';
+        imgEl.onerror = () => {
+          const svg = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="160"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#182c22"/><stop offset="1" stop-color="#0b1a12"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="50%" fill="#87ffad" font-size="16" font-family="Segoe UI, Arial" text-anchor="middle" dominant-baseline="middle">Sin imagen</text></svg>');
+          imgEl.src = `data:image/svg+xml;utf8,${svg}`;
+        };
+      }
       const actions = document.createElement('div');
       actions.className = 'game-actions';
       const saveBtn = document.createElement('button');
@@ -35,6 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const yaGuardado = savedSet.has(key);
       saveBtn.textContent = yaGuardado ? 'Guardado' : 'Guardar';
       saveBtn.disabled = yaGuardado;
+      let esAdmin = false;
+      try{
+        const tk = localStorage.getItem('token');
+        if (tk){ const datos = JSON.parse(atob(tk.split('.')[1])); esAdmin = datos.role === 'admin'; }
+      }catch(_){}
+      if (esAdmin) saveBtn.style.display = 'none';
       saveBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         if (!token){ alert('Inicia sesión para guardar juegos.'); window.location.href='/html/login.html'; return; }
@@ -43,8 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
           description: juego.description || '',
           category: juego.category || 'General',
           image: juego.image || '',
+          developer: juego.developer || '',
+          year: Number(juego.year)||undefined,
+          size: juego.size || '',
+          version: juego.version || '',
           hoursPlayed: Number(juego.hoursPlayed)||0,
           rating: Number(juego.rating)||0,
+          progress: 0,
+          sourceKey: `${(juego.title||'').toLowerCase()}::${(juego.developer||'').toLowerCase()}`,
           completed: false
         };
         try{
@@ -53,9 +73,38 @@ document.addEventListener('DOMContentLoaded', () => {
           saveBtn.textContent = 'Guardado';
           saveBtn.disabled = true;
           savedSet.add(key);
+          try{ localStorage.setItem('saved_refresh', JSON.stringify({ key, at: Date.now() })); }catch(_){}
         }catch(err){ alert('Error de red al guardar.'); }
       });
       actions.appendChild(saveBtn);
+      // botón editar para admin
+      
+      if (esAdmin && juego._id){
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-btn';
+        editBtn.textContent = 'Editar';
+        editBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.location.href = `/html/editar.html?id=${encodeURIComponent(juego._id)}`;
+        });
+        actions.appendChild(editBtn);
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-btn';
+        delBtn.textContent = 'Eliminar';
+        delBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm('¿Eliminar este juego del catálogo? Se quitarán copias privadas.')) return;
+          const tk2 = localStorage.getItem('token');
+          try{
+            const r = await fetch(`${API_URL}/games/${juego._id}`,{ method:'DELETE', headers:{ Authorization:`Bearer ${tk2}` } });
+            if (!r.ok){ const msg = await r.text(); alert(`No se pudo eliminar: ${msg}`); return; }
+            try{ localStorage.setItem('catalog_refresh', JSON.stringify({ id: juego._id, at: Date.now() })); }catch(_){}
+            alert('Juego eliminado');
+            load();
+          }catch(err){ alert('Error de red al eliminar'); }
+        });
+        actions.appendChild(delBtn);
+      }
       card.appendChild(actions);
       cont.appendChild(card);
     });
@@ -77,4 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   buscar?.addEventListener('input', (e) => load(e.target.value.trim().toLowerCase()));
   load();
+  // refrescar automáticamente cuando otra pestaña edite/cree en catálogo
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'catalog_refresh') {
+      load();
+    }
+    if (e.key === 'saved_refresh') {
+      load();
+    }
+  });
 });

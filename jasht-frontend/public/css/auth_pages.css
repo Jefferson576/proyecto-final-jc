@@ -84,16 +84,18 @@ body
 .form-box button {
   width:100%;
   margin-top:14px;
-  border:none;
+  border:1px solid rgba(255,255,255,0.12);
   border-radius:999px;
   padding:12px 16px;
   font-weight:600;
   font-size:15px;
-  color:#fff;
+  color:#0b1a12;
   cursor:pointer;
-  background:linear-gradient(180deg,#1f8400,#0a3b00);
-  box-shadow:0 8px 18px rgba(98, 109, 97, 0.35);
-  }
+  background:linear-gradient(90deg,#29d38c,#87ffad);
+  box-shadow:0 8px 18px rgba(0,173,238,0.25);
+  transition: transform .15s ease, filter .15s ease;
+}
+.form-box button:hover { filter: brightness(1.06); transform: translateY(-1px); }
 .form-box .links {
   margin-top:10px;
   font-size:14px;

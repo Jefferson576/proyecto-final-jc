@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Editar juego - JASHT STORE</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="../img/logo.png" alt="" width="60" height="60">
+      </div>
+      <h1>JASHT STORE</h1>
+    </div>
+    <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+    <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
+    <nav class="menu">
+      <a href="/index.html">Inicio</a>
+      <a href="/html/insertar.html" id="add-link" style="display:none;">Agregar juego</a>
+      <a href="/html/estadisticas.html">Estadísticas</a>
+      <div class="menu-meta">
+        <div id="user-info" class="user-info"></div>
+        <button id="logout-btn">Cerrar sesión</button>
+      </div>
+    </nav>
+  </header>
+  <main class="page-wrap">
+    <div class="formulario-juego">
+      <button class="volver" onclick="window.location.href='/index.html'">&#8592; Volver</button>
+      <div id="auth-status" class="auth-status" style="margin: 15px 0; color: #ccc; font-size: 16px; text-align: center;"></div>
+      <form id="form-editar">
+        <div id="public-status" class="auth-status" style="margin:10px 0; text-align:center;"></div>
+        <label>Título del juego:</label>
+        <input type="text" id="title" required>
+        <label>Descripción:</label>
+        <textarea id="description" rows="4" required></textarea>
+        <label>Categoría:</label>
+        <input type="text" id="category" required>
+        <label>URL de la imagen:</label>
+        <input type="text" id="image" placeholder="https://...">
+        <label>Desarrollador: </label>
+        <input type="text" id="developer" required>
+        <label>Año de lanzamiento:</label>
+        <input type="number" id="year" placeholder="YYYY" min="1970" step="1">
+        <label>Puntuación (0-5):</label>
+        <input type="number" id="rating" min="0" max="5" step="0.1">
+        <label>Tamaño:</label>
+        <input type="text" id="size" placeholder="Ej. 70 GB">
+        <label>Versión:</label>
+        <input type="text" id="version" placeholder="Ej. 1.0">
+        <button type="submit" id="guardar-edicion">Guardar cambios</button>
+      </form>
+    </div>
+  </main>
+  <script src="/js/editar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var token = localStorage.getItem('token');
+      var ui = document.getElementById('user-info');
+      var lb = document.getElementById('logout-btn');
+      if (ui && token) {
+        try {
+          var datos = JSON.parse(atob(token.split('.')[1]));
+          ui.textContent = ' ' + (datos.email || datos.username || '');
+          var addLink = document.getElementById('add-link');
+          if (addLink) addLink.style.display = datos.role === 'admin' ? '' : 'none';
+        } catch (e) { }
+      }
+      if (lb) {
+        if (!token) lb.style.display = 'none';
+        lb.addEventListener('click', function () {
+          localStorage.removeItem('token');
+          window.location.href = '/html/login.html';
+        });
+      }
+      if (!token){ var addLink = document.getElementById('add-link'); if (addLink) addLink.style.display = 'none'; }
+    });
+  </script>
+</body>
+</html>

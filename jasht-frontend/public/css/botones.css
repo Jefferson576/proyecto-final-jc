@@ -1,45 +1,47 @@
 /*boton agregar*/
 #agregar {
-    background: #00adee;
-    color: #fff;
-    border: none;
+    background: linear-gradient(90deg,#29d38c,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
     padding: 10px 16px;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    transition: transform .15s ease, filter .15s ease;
 }
 
-#agregar:hover {
-    background: #008ac2;
-}
+#agregar:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
 /*botones editar*/
 .edit-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    background: linear-gradient(90deg,#29d38c,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 12px;
+    border-radius: 999px;
     cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    transition: transform .15s ease, filter .15s ease;
 }
 
-.edit-btn:hover {
-    background-color: #0056b3;
-}
+.edit-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
 /*boton eliminar*/
 .delete-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    background: linear-gradient(90deg,#29d38c,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 12px;
+    border-radius: 999px;
     cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    transition: transform .15s ease, filter .15s ease;
 }
 
-.delete-btn:hover {
-    background-color: #c82333;
-}
+.delete-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
 .game-actions {
     display: flex;
@@ -50,13 +52,15 @@
 }
 
 .save-btn {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    background: linear-gradient(90deg,#29d38c,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 12px;
+    border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    transition: transform .15s ease, filter .15s ease;
 }
 .save-btn:disabled {
     background-color: #3b3b3b;
@@ -64,73 +68,50 @@
     cursor: default;
 }
 
-.modal-botones {
-    display: flex;
-    justify-content: space-between;
-}
-
-.modal-botones button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
 
 #guardar-edicion {
-    background-color: #28a745;
-    color: white;
+    background: linear-gradient(90deg,#29d38c,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
 }
 
-#guardar-edicion:hover {
-    background-color: #218838;
-}
+#guardar-edicion:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
-#cancelar-edicion {
-    background-color: #dc3545;
-    color: white;
-}
-
-#cancelar-edicion:hover {
-    background-color: #c82333;
-}
 
 /* boton volver */
-.btn-volver {
-    background: #00adee;
-    color: #fff;
-    border: none;
+.btn-volver,
+.volver {
+    background: linear-gradient(90deg,#29d38c,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
     margin-bottom: 18px;
-    box-shadow: 0 4px 14px rgba(0, 173, 238, 0.14);
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    transition: transform .15s ease, filter .15s ease;
 }
 
-.btn-volver:hover {
-    background: #008ac2;
-}
+.btn-volver:hover,
+.volver:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
 /* boton envir reseña pagina */
 .btn-enviar {
-    background: #00adee;
-    color: white;
-    border: none;
+    background: linear-gradient(90deg,#00adee,#87ffad);
+    color: #0b1a12;
+    border: 1px solid rgba(255,255,255,0.12);
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
     align-self: flex-end;
-    box-shadow: 0 6px 18px rgba(0, 173, 238, 0.12);
+    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    transition: transform .15s ease, filter .15s ease;
 }
 
-.btn-enviar:hover {
-    background: #008ac2;
-}
+.btn-enviar:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
 @media (max-width: 600px) {
-    .modal-botones {
-        gap: 10px;
-    }
     
     /* Responsive improvements for mobile */
     #agregar {
@@ -138,7 +119,7 @@
         font-size: 18px;
         padding: 16px;
         margin-top: 25px;
-        border-radius: 8px;
+        border-radius: 999px;
         font-weight: 600;
     }
     
@@ -148,7 +129,7 @@
         font-size: 18px;
         padding: 16px;
         margin-bottom: 20px;
-        border-radius: 8px;
+        border-radius: 999px;
         font-weight: 600;
     }
 }

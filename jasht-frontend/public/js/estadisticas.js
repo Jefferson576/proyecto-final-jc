@@ -15,17 +15,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // promedios 
         const totalJuegos = juegos.length;
-        const totalHoras = juegos.reduce( (acc, j) => acc + (j.hoursPlayed || 0), 0);
         const promedioRating = juegos.reduce( (acc, j) => acc + (j.rating || 0), 0) / totalJuegos;
 
         // Actualizar valores en pantalla
         document.getElementById("total-juegos").textContent = totalJuegos;
-        document.getElementById("total-horas").textContent = totalHoras.toFixed(1);
         document.getElementById("promedio-rating").textContent = promedioRating.toFixed(1);
 
         // Datos para gráficos 
         const nombresJuegos = juegos.map( (j) => j.title);
-        const horasJuegos = juegos.map( (j) => j.hoursPlayed || 0);
 
         // Contar categorías agrupando por palabra o subcategoría
 const categorias = {};
@@ -48,26 +45,7 @@ const nombresCategorias = Object.keys(categorias);
 const cantidadCategorias = Object.values(categorias);
 
 
-        // Gráfico 1: Horas jugadas por juego 
-        new Chart(document.getElementById("graficoHoras"),{
-            type: "bar",
-            data: {
-                labels: nombresJuegos,
-                datasets: [{
-                    label: "Horas jugadas",
-                    data: horasJuegos,
-                    backgroundColor: "#00adee",
-                }, ],
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    },
-                },
-            },
-        });
+        
 
         // Gráfico 2: Juegos por categoría 
         new Chart(document.getElementById("graficoCategorias"),{

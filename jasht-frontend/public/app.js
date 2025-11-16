@@ -10,12 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const inputBuscar = document.getElementById("buscar");
-  const gameForm = document.getElementById("game-form");
-  const modal = document.getElementById("modal-editar");
-  const closeBtn = document.querySelector(".close");
   const token = localStorage.getItem("token");
   const API_URL = (window.location.port === '8080' ? 'http://localhost:3000' : window.location.origin);
   let juegosCache = [];
+  let esAdmin = false;
+  try { const datos = JSON.parse(atob((token||'').split('.') [1])); esAdmin = datos.role === 'admin'; } catch(_){ esAdmin = false; }
 
   // Si no hay token, redirige al login
   if (!token) {
@@ -47,7 +46,25 @@ document.addEventListener("DOMContentLoaded", () => {
       card.className = "game-card";
 
       const imagen = juego.image || "https://via.placeholder.com/300x160?text=Juego";
+      let pv;
+      {
+        const p = Number(juego.progress);
+        if (Number.isFinite(p)) pv = Math.max(0, Math.min(100, p));
+        else pv = juego.completed ? 100 : 0;
+      }
+      const progHtml = `
+        <div class="progress-mini">
+          <div class="bar"><div class="fill" style="width:${pv}%"></div></div>
+          <span class="text">${pv}%</span>
+        </div>
+      `;
 
+      const actionsHtml = `
+        <div class="game-actions">
+          ${esAdmin ? '<button class="edit-btn">Editar</button>' : ''}
+          <button class="delete-btn">Eliminar</button>
+        </div>
+      `;
       card.innerHTML = `
         <img src="${imagen}" alt="${escapeHtml(juego.title || 'Juego')}">
         <div class="info">
@@ -56,15 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
         juego.description && juego.description.length > 150 ? "..." : ""
       }</p>
           <p><strong>Categoría:</strong> ${escapeHtml(juego.category || "Desconocida")}</p>
-          <p><strong>Horas jugadas:</strong> ${juego.hoursPlayed ?? 0}</p>
           <div class="rating-mini">&#9733 ${
             juego.rating ? Number(juego.rating).toFixed(1) : "0.0"
           }/5</div>
+          ${progHtml}
         </div>
-        <div class="game-actions">
-          <button class="edit-btn">Editar</button>
-          <button class="delete-btn">Eliminar</button>
-        </div>
+        ${actionsHtml}
       `;
 
       // Ver detalle 
@@ -101,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const editBtn = card.querySelector(".edit-btn");
       editBtn?.addEventListener("click", (e) => {
         e.stopPropagation();
-        abrirModalEdicion(juego);
+        window.location.href = `/html/editar.html?id=${encodeURIComponent(juego._id)}`;
       });
 
       contenedor.appendChild(card);
@@ -147,114 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // AGREGAR JUEGO 
-  if (gameForm) {
-    gameForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
 
-      const nuevoJuego = {
-        title: document.getElementById("title")?.value || "",
-        description: document.getElementById("description")?.value || "",
-        category: document.getElementById("category")?.value || "",
-        image: document.getElementById("image")?.value || "",
-        hoursPlayed: Number(document.getElementById("hoursPlayed")?.value) || 0,
-        rating: Number(document.getElementById("rating")?.value) || 0,
-        completed: document.getElementById("completed")?.checked || false,
-      };
-
-      try {
-        const res = await fetch(`${API_URL}/games`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(nuevoJuego),
-        });
-        if (!res.ok) {
-          // Manejo específico de autenticación
-          if (res.status === 401 || res.status === 403) {
-            try {
-              const err = await res.json();
-              alert(err.mensaje || "Necesitas iniciar sesión para agregar juegos.");
-            } catch (_) {
-              alert("Necesitas iniciar sesión para agregar juegos.");
-            }
-            localStorage.removeItem("token");
-            window.location.href = "/html/login.html";
-            return;
-          }
-          // Otros errores
-          try {
-            const err = await res.json();
-            alert(err.mensaje || "Error al agregar juego");
-          } catch (_) {
-            alert("Error al agregar juego");
-          }
-          return;
-        }
-        alert("Juego agregado correctamente");
-        gameForm.reset();
-        cargarJuegos();
-      } catch (err) {
-        console.error("Error al agregar juego:", err);
-        alert("No se pudo agregar el juego. Revisa tu conexión o intenta nuevamente.");
-      }
-    });
-  }
-
-  // MODAL EDICIÓN 
-  function abrirModalEdicion(juego) {
-    const inputTitulo = document.getElementById("edit-titulo");
-    const inputDescripcion = document.getElementById("edit-descripcion");
-    const inputCategoria = document.getElementById("edit-categoria");
-    const inputHoras = document.getElementById("edit-horas");
-    const btnGuardar = document.getElementById("guardar-edicion");
-    const btnCancelar = document.getElementById("cancelar-edicion");
-    const inputCompletado = document.getElementById("edit-completed");
-
-    modal.style.display = "flex";
-    inputTitulo.value = juego.title || "";
-    inputDescripcion.value = juego.description || "";
-    inputCategoria.value = juego.category || "";
-    inputHoras.value = juego.hoursPlayed || 0;
-
-    btnGuardar.onclick = async () => {
-      const nuevosDatos = {
-        title: inputTitulo.value,
-        description: inputDescripcion.value,
-        category: inputCategoria.value,
-        hoursPlayed: Number(inputHoras.value) || 0,
-        rating: Number(document.getElementById("edit-rating")?.value) || 0,
-      };
-
-      try {
-        const res = await fetch(`${API_URL}/games/${juego._id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(nuevosDatos),
-        });
-
-        if (!res.ok) throw new Error("Error al actualizar");
-        alert("Juego actualizado correctamente");
-        modal.style.display = "none";
-        cargarJuegos();
-      } catch (err) {
-        console.error("Error al actualizar juego:", err);
-      }
-    };
-
-    btnCancelar.onclick = () => (modal.style.display = "none");
-  }
-
-  // CERRAR MODAL 
-  closeBtn?.addEventListener("click", () => (modal.style.display = "none"));
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) modal.style.display = "none";
-  });
+  // Se eliminó el modal de edición; la edición se hace en /html/editar.html
 
   // salir HTML 
   function escapeHtml(str) {
@@ -276,6 +184,12 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const datos = JSON.parse(atob(token.split(".")[1]));
       userInfo.textContent = ` ${datos.email}`;
+      const adminAdd = document.getElementById('admin-add');
+      if (adminAdd) adminAdd.style.display = datos.role === 'admin' ? '' : 'none';
+      const addBtn = document.getElementById('agregar');
+      if (addBtn) addBtn.style.display = datos.role === 'admin' ? '' : 'none';
+      const addLink = document.getElementById('add-link');
+      if (addLink) addLink.style.display = datos.role === 'admin' ? '' : 'none';
     } catch {
       userInfo.innerHTML = `<a href="./html/login.html">Iniciar sesión</a>`;
     }
@@ -287,6 +201,15 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("token");
       window.location.href = "/html/login.html";
     });
+  }
+
+  if (!token) {
+    const adminAdd = document.getElementById('admin-add');
+    if (adminAdd) adminAdd.style.display = 'none';
+    const addBtn = document.getElementById('agregar');
+    if (addBtn) addBtn.style.display = 'none';
+    const addLink = document.getElementById('add-link');
+    if (addLink) addLink.style.display = 'none';
   }
 
   // Iniciar carga inicial

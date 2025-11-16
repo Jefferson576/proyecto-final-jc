@@ -13,11 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const sizeEl = document.getElementById("size");
     const versionEl = document.getElementById("version");
     const ratingEl = document.getElementById("rating");
-    const horasEl = document.getElementById("horas");
     const reviewsList = document.getElementById("reviews-list");
+    const progressFill = document.getElementById("progress-fill");
+    const progressText = document.getElementById("progress-text");
+    const progressControl = document.getElementById("progress-control");
+    const progressEdit = document.getElementById("progress-edit");
+    const progressSave = document.getElementById("progress-save");
+    const adminEditBtn = document.getElementById("admin-edit-btn");
+    const adminDeleteBtn = document.getElementById("admin-delete-btn");
 
     const reviewForm = document.getElementById("review-form");
     const reviewText = document.getElementById("review-text");
+    const descToggle = document.getElementById("desc-toggle");
 
     const volverBtn = document.getElementById("volver");
     volverBtn.addEventListener("click", () => window.location.href = "/");
@@ -55,13 +62,26 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const juego = await res.json();
-            // debug
-            console.log("Juego cargado:", juego);
 
             imagenEl.src = juego.image || placeholder;
             imagenEl.alt = juego.title || "Imagen del juego";
             tituloEl.textContent = juego.title || "Sin título";
             descripcionEl.textContent = juego.description || "Sin descripción.";
+            if (descToggle && descripcionEl) {
+                function updateToggle(){
+                    const expanded = descripcionEl.classList.contains('expanded');
+                    if (expanded) { descToggle.style.display = ''; descToggle.textContent = 'Ver menos'; return; }
+                    const overflow = descripcionEl.scrollHeight > (descripcionEl.clientHeight + 2);
+                    descToggle.style.display = overflow ? '' : 'none';
+                    descToggle.textContent = 'Ver más';
+                }
+                requestAnimationFrame(updateToggle);
+                descToggle.onclick = function(){
+                    const expanded = descripcionEl.classList.toggle('expanded');
+                    descToggle.textContent = expanded ? 'Ver menos' : 'Ver más';
+                    if (!expanded) requestAnimationFrame(updateToggle);
+                };
+            }
             categoriaEl.textContent = juego.category || "Desconocida";
             anioEl.textContent = juego.year || (juego.createdAt ? new Date(juego.createdAt).getFullYear() : "Desconocido");
             developerEl.textContent = juego.developer || "Desconocido";
@@ -69,6 +89,74 @@ document.addEventListener("DOMContentLoaded", () => {
             versionEl.textContent = juego.version || "—";
             ratingEl.textContent = juego.rating ? juego.rating.toFixed(1) : "0.0";
             horasEl.textContent = juego.hoursPlayed ?? 0;
+
+            const pv = Number(juego.progress);
+            if (progressFill && progressText) {
+                const val = Number.isFinite(pv) ? Math.max(0, Math.min(100, pv)) : (juego.completed ? 100 : 0);
+                progressFill.style.width = `${val}%`;
+                progressText.textContent = `${val}%`;
+            }
+
+            let esAdmin = false;
+            try {
+                const token2 = localStorage.getItem("token");
+                if (token2) {
+                    const datos = JSON.parse(atob(token2.split('.') [1]));
+                    esAdmin = datos.role === 'admin';
+                }
+            } catch(_){ esAdmin = false; }
+            if (progressControl && progressEdit && progressSave) {
+                const inicial = Number.isFinite(pv) ? Math.max(0, Math.min(100, pv)) : (juego.completed ? 100 : 0);
+                progressEdit.value = inicial;
+                progressControl.style.display = esAdmin ? 'none' : '';
+                progressEdit.addEventListener('input', function(){
+                    const v = Math.max(0, Math.min(100, Number(this.value)));
+                    progressFill.style.width = `${v}%`;
+                    progressText.textContent = `${v}%`;
+                });
+                progressSave.addEventListener('click', async function(){
+                    const v = Math.max(0, Math.min(100, Number(progressEdit.value)));
+                    try {
+                        const token3 = localStorage.getItem("token");
+                        const resU = await fetch(`${API_BASE}/games/${gameId}`,{
+                            method:'PUT',
+                            headers:{ 'Content-Type':'application/json', ...(token3?{ Authorization:`Bearer ${token3}` }: {}) },
+                            body: JSON.stringify({ progress: v })
+                        });
+                        if (!resU.ok) throw new Error('Error al actualizar progreso');
+                        const ju = await resU.json();
+                        const np = Number(ju.progress);
+                        const vv = Number.isFinite(np) ? np : v;
+                        progressFill.style.width = `${vv}%`;
+                        progressText.textContent = `${vv}%`;
+                        alert('Progreso actualizado');
+                    } catch(err){
+                        console.error('Actualizar progreso:', err);
+                        alert('No se pudo actualizar el progreso');
+                    }
+                });
+            }
+
+            if (adminEditBtn && esAdmin){
+                adminEditBtn.style.display = '';
+                adminEditBtn.addEventListener('click', () => {
+                    window.location.href = `/html/editar.html?id=${encodeURIComponent(gameId)}`;
+                });
+            }
+            if (adminDeleteBtn && esAdmin){
+                adminDeleteBtn.style.display = '';
+                adminDeleteBtn.addEventListener('click', async () => {
+                    if (!confirm('¿Eliminar este juego del catálogo? Se quitarán copias privadas.')) return;
+                    const tk2 = localStorage.getItem('token');
+                    try{
+                        const r = await fetch(`${API_BASE}/games/${gameId}`,{ method:'DELETE', headers:{ Authorization:`Bearer ${tk2}` } });
+                        if (!r.ok){ const msg = await r.text(); alert(`No se pudo eliminar: ${msg}`); return; }
+                        try{ localStorage.setItem('catalog_refresh', JSON.stringify({ id: gameId, at: Date.now() })); }catch(_){}
+                        alert('Juego eliminado');
+                        window.location.href = '/html/catalog.html';
+                    }catch(err){ alert('Error de red al eliminar'); }
+                });
+            }
 
             // Mostrar reseñas propias y acumular rating
             let htmlPropias = '';

@@ -18,9 +18,10 @@
     <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
     <nav class="menu">
       <a href="/index.html">Inicio</a>
-      <a href="/html/insertar.html">Agregar juego</a>
+      <a href="/html/insertar.html" id="add-link" style="display:none;">Agregar juego</a>
       <a href="/html/estadisticas.html">Estadísticas</a>
       <a href="/html/catalog.html">Todos los juegos</a>
+      <a id="admin-add" href="/html/insertar.html" style="display:none;">Agregar para todos</a>
       <div class="menu-meta">
         <div id="user-info" class="user-info"></div>
         <button id="logout-btn">Cerrar sesión</button>
@@ -42,13 +43,16 @@
       var token = localStorage.getItem('token');
       var ui = document.getElementById('user-info');
       var lb = document.getElementById('logout-btn');
+      var adminAdd = document.getElementById('admin-add');
+      var addLink = document.getElementById('add-link');
       if (ui && token) {
-        try { var datos = JSON.parse(atob(token.split('.')[1])); ui.textContent = ' ' + (datos.email || datos.username || ''); } catch (e) { }
+        try { var datos = JSON.parse(atob(token.split('.')[1])); ui.textContent = ' ' + (datos.email || datos.username || ''); if (adminAdd) adminAdd.style.display = datos.role === 'admin' ? '' : 'none'; if (addLink) addLink.style.display = datos.role === 'admin' ? '' : 'none'; } catch (e) { }
       }
       if (lb) {
         if (!token) lb.style.display = 'none';
         lb.addEventListener('click', function () { localStorage.removeItem('token'); window.location.href = '/html/login.html'; });
       }
+      if (!token){ if (adminAdd) adminAdd.style.display = 'none'; if (addLink) addLink.style.display = 'none'; }
     });
   </script>
 </body>

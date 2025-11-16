@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bienvenidos a JASHT STORE</title>
   <link rel="stylesheet" href="/style.css" />
+  <script>
+    try { if (!localStorage.getItem('token')) { location.replace('/html/login.html'); } } catch(e) {}
+  </script>
 </head>
 
 <body>
@@ -21,9 +24,10 @@
     <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
     <nav class="menu">
       <a href="index.html">Inicio</a>
-      <a href="/html/insertar.html">Agregar juego</a>
+      <a href="/html/insertar.html" id="add-link" style="display:none;">Agregar juego</a>
       <a href="/html/estadisticas.html">Estadísticas</a>
       <a href="/html/catalog.html">Todos los juegos</a>
+      <a id="admin-add" href="/html/insertar.html" style="display:none;">Agregar para todos</a>
       <div class="menu-meta">
         <div id="user-info" class="user-info"></div>
         <button id="logout-btn">Cerrar sesión</button>
@@ -43,29 +47,6 @@
     </div>
   </main>
 
-  <!-- edición de juego -->
-  <div id="modal-editar" class="modal">
-    <div class="modal-contenido">
-      <h2>Editar juego</h2>
-
-      <label for="edit-titulo">Título:</label>
-      <input type="text" id="edit-titulo" placeholder="Título del juego">
-
-      <label for="edit-descripcion">Descripción:</label>
-      <textarea id="edit-descripcion" placeholder="Descripción"></textarea>
-
-      <label for="edit-categoria">Categoría:</label>
-      <input type="text" id="edit-categoria" placeholder="Categoría">
-
-      <label for="edit-horas">Horas jugadas:</label>
-      <input type="number" id="edit-horas" placeholder="Horas jugadas">
-
-      <div class="modal-botones">
-        <button id="guardar-edicion">Guardar</button>
-        <button id="cancelar-edicion">Cancelar</button>
-      </div>
-    </div>
-  </div>
   <!-- SCRIPT -->
   <script src="app.js" defer></script>
 </body>

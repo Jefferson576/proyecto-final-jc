@@ -2,14 +2,18 @@
 
 .btn-volver {
   display: inline-block;
-  background-color: #00adee;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
+  background: linear-gradient(90deg,#29d38c,#87ffad);
+  color: #0b1a12;
+  padding: 10px 16px;
+  border-radius: 999px;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
   margin-top: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+  transition: transform .15s ease, filter .15s ease;
 }
+.btn-volver:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
 .estadisticas-container {
   max-width: 900px;

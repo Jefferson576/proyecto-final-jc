@@ -30,6 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="rating-mini">&#9733 ${(juego.rating?Number(juego.rating).toFixed(1):'0.0')}/5</div>
         </div>
       `;
+      const imgEl = card.querySelector('img');
+      if (imgEl){
+        imgEl.loading = 'lazy';
+        imgEl.onerror = () => {
+          const svg = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="160"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#182c22"/><stop offset="1" stop-color="#0b1a12"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="50%" fill="#87ffad" font-size="16" font-family="Segoe UI, Arial" text-anchor="middle" dominant-baseline="middle">Sin imagen</text></svg>');
+          imgEl.src = `data:image/svg+xml;utf8,${svg}`;
+        };
+      }
       const actions = document.createElement('div');
       actions.className = 'game-actions';
       const saveBtn = document.createElement('button');
@@ -50,8 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
           description: juego.description || '',
           category: juego.category || 'General',
           image: juego.image || '',
+          developer: juego.developer || '',
           hoursPlayed: Number(juego.hoursPlayed)||0,
           rating: Number(juego.rating)||0,
+          sourceKey: `${(juego.title||'').toLowerCase()}::${(juego.developer||'').toLowerCase()}`,
           completed: false
         };
         try{
@@ -96,6 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src="${imagen}" alt="${escapeHtml(juego.title || 'Juego')}">
           <div class="overlay"><h2>${escapeHtml(juego.title || 'Sin título')}</h2></div>
         `;
+        const imgEl2 = card.querySelector('img');
+        if (imgEl2){
+          imgEl2.loading = 'lazy';
+          imgEl2.onerror = () => {
+            const svg = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="160"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#182c22"/><stop offset="1" stop-color="#0b1a12"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="50%" fill="#87ffad" font-size="16" font-family="Segoe UI, Arial" text-anchor="middle" dominant-baseline="middle">Sin imagen</text></svg>');
+            imgEl2.src = `data:image/svg+xml;utf8,${svg}`;
+          };
+        }
         card.classList.remove('fade-out');
         card.classList.add('fade-in');
       }, 300);
