@@ -1,3 +1,4 @@
+// Maneja el registro de nuevos usuarios
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -14,6 +15,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   }
 
   try {
+    // Base de la API: usa localhost en desarrollo (cuando el frontend está en 8080)
     const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
     const res = await fetch(`${API_BASE}/register`, {
       method: "POST",

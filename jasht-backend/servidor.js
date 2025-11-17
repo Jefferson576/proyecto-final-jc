@@ -1,3 +1,10 @@
+/*
+  Servidor backend (Express + Mongoose)
+  - Autenticación JWT (registro, login, recuperación y restablecimiento de contraseña)
+  - Gestión de juegos: catálogo público y biblioteca privada por usuario
+  - Reseñas compartidas por clave (title+developer)
+  - Servido de archivos estáticos del frontend
+*/
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -11,6 +18,7 @@ const path = require("path");
 
 connectDB();
 
+// Configuración básica de Express y middlewares
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -25,7 +33,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-// Modelo de reseñas compartidas
+// Modelo de reseñas compartidas (fuera de Game, para listar públicas por clave)
 const sharedReviewSchema = new mongoose.Schema({
   key: { type: String, index: true },
   title: String,
@@ -37,10 +45,10 @@ const sharedReviewSchema = new mongoose.Schema({
 });
 const SharedReview = mongoose.models.SharedReview || mongoose.model("SharedReview", sharedReviewSchema);
 
-// MIDDLEWARE Y CONFIGURACIÓN 
+// Configuración de seguridad y middleware
 const SECRET_KEY = process.env.SECRET_KEY || "changeme-dev-secret";
 
-// Middleware de verificación JWT
+// Middleware de verificación JWT (requiere header Authorization: Bearer <token>)
 function verificarToken(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ mensaje: "Token requerido" });
@@ -54,9 +62,9 @@ function verificarToken(req, res, next) {
   }
 }
 
-//RUTAS DE API
+// RUTAS DE API
 
-// Registro de usuario
+// Registro de usuario: crea usuario nuevo si el email no existe
 app.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -75,7 +83,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Inicio de sesión
+// Inicio de sesión: valida credenciales y devuelve token JWT
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -103,7 +111,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Recuperación de contraseña: solicitar enlace
+// Recuperación de contraseña: genera token de restablecimiento y URL temporal
 app.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -125,7 +133,7 @@ app.post("/forgot-password", async (req, res) => {
   }
 });
 
-// Recuperación de contraseña: establecer nueva contraseña
+// Restablecer contraseña: verifica token y actualiza password del usuario
 app.post("/reset-password", async (req, res) => {
   try {
     const { token, password } = req.body;
@@ -158,7 +166,7 @@ app.post("/reset-password", async (req, res) => {
 });
 
 // RUTAS DE JUEGOS
-// Obtener solo los juegos del usuario autenticado
+// Obtener la biblioteca del usuario autenticado (con búsqueda opcional)
 app.get("/games", verificarToken, async (req, res) => {
   try {
     const busqueda = req.query.search;
@@ -179,7 +187,7 @@ app.get("/games", verificarToken, async (req, res) => {
   }
 });
 
-// Catálogo público: obtener juegos sin requerir autenticación
+// Catálogo público: listado de juegos públicos, sin autenticación
 app.get("/catalog", async (req, res) => {
   try {
     const busqueda = req.query.search;
@@ -215,8 +223,83 @@ app.get("/shared-reviews", async (req, res) => {
   }
 });
 
+// Estadísticas para admin: copias privadas y mejores/peores reseñas
+app.get("/admin/stats", verificarToken, async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ mensaje: "Requiere rol admin" });
+    }
 
-// Obtener detalles de un juego por ID (del usuario autenticado)
+    // Copias privadas por juego (sourceKey)
+    const copiesAgg = await Game.aggregate([
+      { $match: { public: false } },
+      { $group: { _id: "$sourceKey", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 20 }
+    ]);
+    const copyKeys = copiesAgg.map(r => r._id).filter(Boolean);
+    const publicGames = await Game.find({ public: true, sourceKey: { $in: copyKeys } }).select("title developer image sourceKey");
+    const pubMap = new Map(publicGames.map(g => [g.sourceKey, g]));
+    const topCopies = copiesAgg.map(r => {
+      const g = pubMap.get(r._id);
+      if (g) {
+        return { title: g.title, developer: g.developer, image: g.image, sourceKey: g.sourceKey, count: r.count };
+      }
+      const parts = String(r._id || "").split("::");
+      return { title: parts[0] || r._id, developer: parts[1] || "", sourceKey: r._id, count: r.count };
+    });
+
+    // Mejores y peores reseñas promedio por clave
+    const reviewsAggBest = await SharedReview.aggregate([
+      { $group: { _id: "$key", avgRating: { $avg: "$rating" }, reviewsCount: { $sum: 1 } } },
+      { $match: { reviewsCount: { $gte: 1 } } },
+      { $sort: { avgRating: -1 } },
+      { $limit: 20 }
+    ]);
+    const reviewsAggWorst = await SharedReview.aggregate([
+      { $group: { _id: "$key", avgRating: { $avg: "$rating" }, reviewsCount: { $sum: 1 } } },
+      { $match: { reviewsCount: { $gte: 1 } } },
+      { $sort: { avgRating: 1 } },
+      { $limit: 20 }
+    ]);
+
+    const toSourceKey = (key) => {
+      const i = String(key).indexOf("|");
+      if (i < 0) return String(key);
+      const a = String(key).slice(0, i);
+      const b = String(key).slice(i + 1);
+      return `${a}::${b}`;
+    };
+    const bestKeys = reviewsAggBest.map(r => toSourceKey(r._id));
+    const worstKeys = reviewsAggWorst.map(r => toSourceKey(r._id));
+    const reviewGames = await Game.find({ public: true, sourceKey: { $in: [...bestKeys, ...worstKeys] } }).select("title developer image sourceKey");
+    const reviewMap = new Map(reviewGames.map(g => [g.sourceKey, g]));
+    const bestReviews = reviewsAggBest.map(r => {
+      const sk = toSourceKey(r._id);
+      const g = reviewMap.get(sk);
+      const out = { avgRating: Number(r.avgRating.toFixed(1)), reviewsCount: r.reviewsCount };
+      if (g) return { ...out, title: g.title, developer: g.developer, image: g.image };
+      const i = String(r._id).indexOf("|");
+      return { ...out, title: i>=0 ? String(r._id).slice(0,i) : String(r._id), developer: i>=0 ? String(r._id).slice(i+1) : "" };
+    });
+    const worstReviews = reviewsAggWorst.map(r => {
+      const sk = toSourceKey(r._id);
+      const g = reviewMap.get(sk);
+      const out = { avgRating: Number(r.avgRating.toFixed(1)), reviewsCount: r.reviewsCount };
+      if (g) return { ...out, title: g.title, developer: g.developer, image: g.image };
+      const i = String(r._id).indexOf("|");
+      return { ...out, title: i>=0 ? String(r._id).slice(0,i) : String(r._id), developer: i>=0 ? String(r._id).slice(i+1) : "" };
+    });
+
+    res.json({ topCopies, bestReviews, worstReviews });
+  } catch (error) {
+    console.error("Error en admin/stats:", error);
+    res.status(500).json({ mensaje: "Error al obtener estadísticas de admin" });
+  }
+});
+
+// Obtener detalles de un juego por ID
+// Admin puede ver cualquiera; usuario sólo sus propios juegos
 app.get("/games/:id", verificarToken, async (req, res) => {
   try {
     const esAdmin = req.user && req.user.role === 'admin';
@@ -235,7 +318,9 @@ app.get("/games/:id", verificarToken, async (req, res) => {
   }
 });
 
-// Crear un nuevo juego vinculado al usuario
+// Crear juego
+// - Admin: crea/actualiza juego público (catálogo)
+// - Usuario: guarda una copia privada desde el catálogo, evitando duplicados
 app.post("/games", verificarToken, async (req, res) => {
   try {
     const esAdmin = req.user && req.user.role === 'admin';
@@ -264,6 +349,7 @@ app.post("/games", verificarToken, async (req, res) => {
       if (yaExiste) {
         return res.status(409).json({ mensaje: "Este juego ya está en tu biblioteca" });
       }
+      // Clona campos del juego público al nuevo juego privado del usuario
       const nuevoJuego = new Game({
         title: origen.title,
         description: origen.description,
@@ -289,6 +375,8 @@ app.post("/games", verificarToken, async (req, res) => {
 });
 
 // Editar juego
+// - Admin: edita juego público y propaga cambios a copias privadas
+// - Usuario: sólo puede editar sus propios juegos privados
 app.put("/games/:id", verificarToken, async (req, res) => {
   try {
     const esAdmin = req.user && req.user.role === 'admin';
@@ -328,6 +416,8 @@ app.put("/games/:id", verificarToken, async (req, res) => {
 });
 
 // Eliminar juego
+// - Admin: si elimina un público, también borra copias privadas derivadas
+// - Usuario: sólo puede eliminar sus propios juegos
 app.delete("/games/:id", verificarToken, async (req, res) => {
   try {
     const esAdmin = req.user && req.user.role === 'admin';
@@ -349,7 +439,7 @@ app.delete("/games/:id", verificarToken, async (req, res) => {
     res.status(500).json({ mensaje: "Error al eliminar juego" });
   }
 });
-// Añadir reseña a juego
+// Añadir reseña a juego privado del usuario y compartir resumen público
 app.post("/games/:id/reviews", verificarToken, async (req, res) => {
   try {
     const { text, rating } = req.body;
@@ -382,19 +472,19 @@ app.post("/games/:id/reviews", verificarToken, async (req, res) => {
   }
 });
 
-// ARCHIVOS ESTÁTICOS
+// ARCHIVOS ESTÁTICOS: servir el build del frontend
 const STATIC_DIR = path.join(__dirname, "../jasht-frontend/public");
 console.log("Static dir:", STATIC_DIR);
 app.use(express.static(STATIC_DIR));
 
 // Servidor
 
-// Ruta raíz pasa a login
+// Redirección de raíz a la página de login del frontend
 app.get("/", (req, res) => {
   res.redirect("/html/login.html");
 });
 
-// Devolvemos 404 JSON para cualquier ruta no definida explícitamente.
+// 404 JSON para cualquier ruta no definida explícitamente
 app.use((req, res) => {
   console.warn("404:", req.method, req.originalUrl);
   res.status(404).json({ mensaje: "Ruta no encontrada" });

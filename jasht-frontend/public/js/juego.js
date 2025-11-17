@@ -1,9 +1,12 @@
+// Página de detalle del juego: muestra información, progreso y reseñas
 document.addEventListener("DOMContentLoaded", () => {
     // Obtener ID desde la URL
+    // Obtiene el ID de juego desde la URL
     const params = new URLSearchParams(window.location.search);
     const gameId = params.get("id");
 
     // Elementos del DOM
+    // Referencias a elementos del DOM
     const imagenEl = document.getElementById("imagen");
     const tituloEl = document.getElementById("titulo");
     const descripcionEl = document.getElementById("descripcion");
@@ -30,10 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     volverBtn.addEventListener("click", () => window.location.href = "/");
 
     // placeholder de imagen si no existe
+    // Imagen por defecto si falta portada
     const placeholder = "https://via.placeholder.com/350x220?text=No+Image";
 
     const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
     // Cargar datos del juego
+    // Carga los datos del juego desde la API
     async function cargarJuego() {
         if (!gameId) {
             tituloEl.textContent = "ID no proporcionado";
@@ -42,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const token = localStorage.getItem("token");
+            // Petición al backend con token cuando exista
             const res = await fetch(`${API_BASE}/games/${gameId}`, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             });
@@ -63,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const juego = await res.json();
 
+            // Render de datos principales
             imagenEl.src = juego.image || placeholder;
             imagenEl.alt = juego.title || "Imagen del juego";
             tituloEl.textContent = juego.title || "Sin título";
@@ -88,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
             sizeEl.textContent = juego.size || "Desconocido";
             versionEl.textContent = juego.version || "—";
             ratingEl.textContent = juego.rating ? juego.rating.toFixed(1) : "0.0";
-            horasEl.textContent = juego.hoursPlayed ?? 0;
 
             const pv = Number(juego.progress);
+            // Render del progreso visual
             if (progressFill && progressText) {
                 const val = Number.isFinite(pv) ? Math.max(0, Math.min(100, pv)) : (juego.completed ? 100 : 0);
                 progressFill.style.width = `${val}%`;
@@ -137,12 +144,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
+            // Botón editar (sólo admin)
             if (adminEditBtn && esAdmin){
                 adminEditBtn.style.display = '';
                 adminEditBtn.addEventListener('click', () => {
                     window.location.href = `/html/editar.html?id=${encodeURIComponent(gameId)}`;
                 });
             }
+            // Botón eliminar del catálogo (sólo admin)
             if (adminDeleteBtn && esAdmin){
                 adminDeleteBtn.style.display = '';
                 adminDeleteBtn.addEventListener('click', async () => {
@@ -158,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // Mostrar reseñas propias y acumular rating
+            // Render de reseñas propias y cálculo de promedio
             let htmlPropias = '';
             let ownSum = 0, ownCount = 0;
             if (Array.isArray(juego.reviews) && juego.reviews.length > 0) {

@@ -64,7 +64,8 @@ header {
 .game-card h2 {
   margin: 4px 0;
   font-size: 18px;
-  color: #00adee;
+  color: #e7e7e7;
+  font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 .game-card p {
@@ -93,22 +94,27 @@ header {
   gap: 8px;
   margin-top: 10px;
 }
+
 .progress-mini .bar {
   position: relative;
   flex: 1;
   height: 8px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   overflow: hidden;
 }
+
 .progress-mini .fill {
   position: absolute;
-  left: 0; top: 0; bottom: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: 0%;
   border-radius: 999px;
   background: linear-gradient(90deg, #00adee, #87ffad);
 }
+
 .progress-mini .text {
   min-width: 44px;
   text-align: right;
@@ -157,28 +163,36 @@ header {
 
 #logout-btn {
   padding: 8px 12px;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   font-size: 16px;
-  background: linear-gradient(90deg,#29d38c,#87ffad);
+  background: linear-gradient(90deg, #29d38c, #87ffad);
   color: #0b1a12;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+  box-shadow: 0 8px 18px rgba(0, 173, 238, 0.25);
   transition: transform .15s ease, filter .15s ease;
 }
-#logout-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+
+#logout-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
 
 .menu-meta {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.menu .user-info { color: #fff; }
+
+.menu .user-info {
+  color: #fff;
+}
 
 /* Hamburguesa */
 .menu-toggle {
   display: none;
 }
+
 .hamburger {
   display: none;
   cursor: pointer;
@@ -196,13 +210,16 @@ header {
     flex-wrap: wrap;
     row-gap: 8px;
   }
+
   .menu {
     gap: 24px;
   }
+
   #logout-btn {
     padding: 6px 10px;
     font-size: 14px;
   }
+
   .user-info {
     max-width: 50%;
     white-space: nowrap;
@@ -212,9 +229,15 @@ header {
 }
 
 @media (max-width: 1000px) {
-  .hamburger { display: block; }
-  .menu { display: none; }
-  .menu-toggle:checked ~ .menu {
+  .hamburger {
+    display: block;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .menu-toggle:checked~.menu {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -230,36 +253,49 @@ header {
     flex-wrap: wrap;
     gap: 16px;
   }
-  .menu a { font-size: 14px; }
+
+  .menu a {
+    font-size: 14px;
+  }
+
   .barra-superior {
     flex-direction: column;
     gap: 10px;
   }
+
   #buscar,
   #buscar-catalogo {
     width: 100%;
     margin-right: 0;
   }
+
   #agregar {
     width: 100%;
   }
+
   .page-wrap {
     margin: 16px auto;
     padding: 0 12px;
   }
+
   .games-container {
     grid-template-columns: 1fr;
     gap: 14px;
   }
+
   .game-card img {
     height: 140px;
   }
+
   .menu-meta {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
   }
-  #logout-btn { width: 100%; }
+
+  #logout-btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 1000px) {
@@ -268,13 +304,16 @@ header {
     flex-wrap: wrap;
     row-gap: 8px;
   }
+
   .menu {
     gap: 24px;
   }
+
   #logout-btn {
     padding: 6px 10px;
     font-size: 14px;
   }
+
   .user-info {
     max-width: 50%;
     white-space: nowrap;
@@ -290,26 +329,32 @@ header {
     flex-wrap: wrap;
     gap: 16px;
   }
+
   .barra-superior {
     flex-direction: column;
     gap: 10px;
   }
+
   #buscar,
   #buscar-catalogo {
     width: 100%;
     margin-right: 0;
   }
+
   #agregar {
     width: 100%;
   }
+
   .page-wrap {
     margin: 16px auto;
     padding: 0 12px;
   }
+
   .games-container {
     grid-template-columns: 1fr;
     gap: 14px;
   }
+
   .game-card img {
     height: 140px;
   }
@@ -321,22 +366,27 @@ header {
     flex-wrap: wrap;
     gap: 10px;
   }
+
   .main-header h1 {
     font-size: 22px;
   }
+
   .menu {
     gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
   }
+
   .menu a {
     font-size: 16px;
     padding: 8px 12px;
   }
+
   .barra-superior {
     flex-direction: column;
     gap: 15px;
   }
+
   #buscar,
   #buscar-catalogo {
     width: 100%;
@@ -344,44 +394,55 @@ header {
     font-size: 16px;
     padding: 12px;
   }
+
   #agregar {
     width: 100%;
     font-size: 16px;
     padding: 12px;
   }
+
   .page-wrap {
     margin: 20px auto;
     padding: 0 16px;
   }
+
   .page-wrap h2 {
     font-size: 24px;
     margin-bottom: 20px;
   }
+
   .page-wrap p {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 20px;
   }
+
   .games-container {
     grid-template-columns: 1fr;
     gap: 20px;
   }
+
   .game-card {
     padding: 15px;
   }
+
   .game-card img {
     height: 160px;
   }
+
   .game-card h2 {
     font-size: 20px;
   }
+
   .game-card p {
     font-size: 14px;
   }
+
   .rating-mini {
     font-size: 16px;
     padding: 8px 16px;
   }
+
   .hamburger {
     font-size: 24px;
     padding: 10px;

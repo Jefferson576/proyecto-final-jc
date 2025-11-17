@@ -1,19 +1,23 @@
+// Obtiene un parámetro de la URL (por ejemplo el token)
 function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
   return params.get(name);
 }
 
+// Maneja el formulario de restablecimiento de contraseña
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("resetForm");
   const mensaje = document.getElementById("mensaje");
 
   const token = getQueryParam("token");
+  // Si falta token en la URL, se deshabilita el envío
   if (!token) {
     mensaje.textContent = "Token faltante. Solicita un nuevo enlace desde Recuperar contraseña.";
     form.querySelector("button[type='submit']").disabled = true;
     return;
   }
 
+  // Envía nueva contraseña al backend para actualizarla
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     mensaje.textContent = "";
@@ -31,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      // Base de la API según entorno
       const base = (window.location.port === '8080' ? 'http://localhost:3000' : window.location.origin);
       const respuesta = await fetch(`${base}/reset-password`, {
         method: "POST",

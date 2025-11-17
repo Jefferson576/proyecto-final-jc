@@ -7,11 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   let savedSet = new Set();
 
+  // Escapa texto para evitar inyección de HTML
   function escapeHtml(str){
     if (typeof str !== 'string') return '';
     return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
   }
 
+  // Renderiza el catálogo público en tarjetas con acciones
   function render(list){
     cont.innerHTML = '';
     if (!Array.isArray(list) || list.length === 0){ cont.innerHTML = '<p>No hay juegos disponibles.</p>'; return; }
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
           imgEl.src = `data:image/svg+xml;utf8,${svg}`;
         };
       }
+      // Acciones por tarjeta: guardar en biblioteca y (si admin) editar/eliminar
       const actions = document.createElement('div');
       actions.className = 'game-actions';
       const saveBtn = document.createElement('button');
@@ -110,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Carga el catálogo (y biblioteca si hay token); admite filtro de búsqueda
   async function load(search){
     try{
       if (token){

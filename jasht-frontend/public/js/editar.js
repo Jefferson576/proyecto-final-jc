@@ -1,3 +1,4 @@
+// Página de edición de juego del catálogo (sólo admin)
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('form-editar');
   const authStatus = document.getElementById('auth-status');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try{ const datos = JSON.parse(atob(token.split('.')[1])); authStatus.textContent = `Sesión: ${datos.email || datos.username || 'usuario'} • Editando`; }catch(_){}
   }
 
+  // Carga datos del juego para rellenar el formulario
   async function cargar(){
     if (!editId){ alert('Falta el ID del juego.'); return; }
     try{
@@ -41,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }catch(err){ alert('Error de red al cargar'); }
   }
 
+  // Guarda cambios del formulario enviando un PUT al backend
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const payload = {

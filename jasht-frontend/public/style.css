@@ -1,7 +1,8 @@
-@import 'css/papr.css';
-@import 'css/pa_ju.css';
-@import 'css/inser.css';
-@import 'css/botones.css';
-@import 'css/estadisticas.css';
-@import 'css/login_register_resta.css';
-@import 'css/auth_pages.css';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+@import 'css/cards.css';
+@import 'css/game-detail.css';
+@import 'css/forms.css';
+@import 'css/buttons.css';
+@import 'css/stats.css';
+@import 'css/login-register.css';
+@import 'css/auth-pages.css';

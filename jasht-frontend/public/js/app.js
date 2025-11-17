@@ -1,4 +1,6 @@
+// Inicializa la página principal: lista y gestión de juegos del usuario
 document.addEventListener("DOMContentLoaded", () => {
+  // Referencias al contenedor donde se renderizan las tarjetas
   const contenedor =
     document.getElementById("game-container") ||
     document.getElementById("games-container") ||
@@ -9,21 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Estado de autenticación y base de API
   const inputBuscar = document.getElementById("buscar");
   const token = localStorage.getItem("token");
-  const API_URL = (window.location.port === '8080' ? 'http://localhost:3000' : window.location.origin);
+  const API_URL = Common.getApiBase() || window.location.origin;
   let juegosCache = [];
   let esAdmin = false;
   try { const datos = JSON.parse(atob((token||'').split('.') [1])); esAdmin = datos.role === 'admin'; } catch(_){ esAdmin = false; }
 
-  // Si no hay token, redirige al login
-  if (!token) {
-    alert("Debes iniciar sesión para acceder a esta función.");
-    window.location.href = "./html/login.html";
-    return;
-  }
+  // Verificación de sesión y posible redirección a login
+  if (!Common.requireAuthOrRedirect()) return;
 
-  // BUSCADOR 
+  // Configura el buscador de juegos (filtra por título o categoría)
   function setupBuscar(callback) {
     if (!inputBuscar) return;
     inputBuscar.addEventListener("input", (e) => {
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // MOSTRAR JUEGOS 
+  // Renderiza la lista de juegos en tarjetas con acciones
   function renderizarJuegos(lista) {
     contenedor.innerHTML = "";
 
@@ -42,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     lista.forEach((juego) => {
+      // Crea la tarjeta del juego y calcula el progreso visual
       const card = document.createElement("div");
       card.className = "game-card";
 
@@ -59,12 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
+      // Acciones disponibles por tarjeta (editar para admin, eliminar para todos)
       const actionsHtml = `
         <div class="game-actions">
           ${esAdmin ? '<button class="edit-btn">Editar</button>' : ''}
           <button class="delete-btn">Eliminar</button>
         </div>
       `;
+      const escapeHtml = Common.escapeHtml;
       card.innerHTML = `
         <img src="${imagen}" alt="${escapeHtml(juego.title || 'Juego')}">
         <div class="info">
@@ -81,14 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
         ${actionsHtml}
       `;
 
-      // Ver detalle 
+      // Navegación al detalle al hacer click en imagen o título
       const img = card.querySelector("img");
       const titleEl = card.querySelector("h2");
       const abrirDetalle = () => (window.location.href = `html/juego.html?id=${juego._id}`);
       img?.addEventListener("click", abrirDetalle);
       titleEl?.addEventListener("click", abrirDetalle);
 
-      // Eliminar 
+      // Eliminar juego de la biblioteca del usuario
       const delBtn = card.querySelector(".delete-btn");
       delBtn?.addEventListener("click", async (e) => {
         e.stopPropagation();
@@ -111,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Editar 
+      // Editar juego del catálogo (solo admin)
       const editBtn = card.querySelector(".edit-btn");
       editBtn?.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -122,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // CARGAR JUEGOS 
+  // Carga los juegos del usuario desde la API y activa la búsqueda
   async function cargarJuegos() {
     try {
       const res = await fetch(`${API_URL}/games`, {
@@ -146,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
       juegosCache = Array.isArray(juegos) ? juegos : [];
       renderizarJuegos(juegosCache);
 
-      // Activar búsqueda
       setupBuscar((texto) => {
         const filtrados = juegosCache.filter(
           (j) =>
@@ -161,10 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
-  // Se eliminó el modal de edición; la edición se hace en /html/editar.html
-
-  // salir HTML 
+  // Escapa caracteres peligrosos para evitar XSS al inyectar texto
   function escapeHtml(str) {
     if (typeof str !== "string") return "";
     return str.replace(/[&<>"']/g, (m) =>
@@ -178,7 +176,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  // CARGAR USUARIO EN HEADER 
+  // Pinta datos del usuario en el header y configura cierre de sesión
+  Common.setHeader();
+
   const userInfo = document.getElementById("user-info");
   if (userInfo && token) {
     try {
@@ -194,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
       userInfo.innerHTML = `<a href="./html/login.html">Iniciar sesión</a>`;
     }
   }
-  // CERRAR SESIÓN 
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
@@ -212,6 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addLink) addLink.style.display = 'none';
   }
 
-  // Iniciar carga inicial
+  // Inicio: cargar lista de juegos
   cargarJuegos();
 });

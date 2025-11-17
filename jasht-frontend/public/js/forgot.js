@@ -1,3 +1,4 @@
+// Genera un enlace de restablecimiento de contraseña y lo muestra
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("forgotForm");
   const mensaje = document.getElementById("mensaje");
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     try {
+      // Base de la API: usa localhost en desarrollo (cuando el frontend está en 8080)
       const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
       const REQUEST_URL = `${API_BASE}/forgot-password`;
       console.log("[forgot] POST", REQUEST_URL);

@@ -1,3 +1,4 @@
+// Página para agregar juego (usuario) o editar juego público (admin)
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("form-juego");
     const authStatus = document.getElementById("auth-status");
@@ -5,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editId = params.get('editId');
     const API_BASE = (window.location.port === '8080' ? 'http://localhost:3000' : '');
 
+    // Validación de sesión
     const token = localStorage.getItem("token");
     if (!token) {
         if (authStatus) authStatus.textContent = "No autenticado. Inicia sesión para agregar juegos.";
@@ -15,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Mostrar usuario autenticado
     if (authStatus) {
+        // Muestra el usuario autenticado y ajusta controles según rol
         try {
             const datos = JSON.parse(atob(token.split(".")[1]));
             authStatus.textContent = `Sesión activa: ${datos.email || datos.username || "usuario"}`;
@@ -31,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const btn = document.getElementById('agregar');
                 if (btn) btn.textContent = 'Guardar cambios';
                 // Precargar valores del juego
+                // Precarga datos del juego a editar
                 (async () => {
                     try{
                         const res = await fetch(`${API_BASE}/games/${editId}`,{ headers: { Authorization:`Bearer ${token}` } });
@@ -52,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Envía el formulario para crear/editar juego
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 

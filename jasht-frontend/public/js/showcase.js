@@ -1,10 +1,13 @@
+// Showcase/carousel para pantallas de login y listado compacto en auth pages
 document.addEventListener('DOMContentLoaded', () => {
+  // Contenedor de showcase; si no existe, no hacemos nada
   const cont = document.getElementById('games-showcase') || document.querySelector('.games-showcase');
   if (!cont) return;
 
   const API_URL = (window.location.port === '8080' ? 'http://localhost:3000' : window.location.origin);
   const token = localStorage.getItem('token');
   let savedSet = new Set();
+  // Modo carrusel sólo en login
   const isCarousel = document.body.classList.contains('login-page');
 
   function escapeHtml(str){
@@ -12,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
   }
 
+  // Render en tarjetas simples
   function render(list){
     cont.innerHTML = '';
     if (!Array.isArray(list) || list.length === 0){
@@ -89,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Render en modo carrusel rotando elementos
   function renderCarousel(list){
     cont.innerHTML = '';
     if (!Array.isArray(list) || list.length === 0){ cont.innerHTML = '<p>No hay juegos disponibles.</p>'; return; }
@@ -122,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => { i = (i + 1) % list.length; show(i); }, 4500);
   }
 
+  // Carga catálogo y (si hay token y no es login) la biblioteca para marcar guardados
   async function load(){
     try{
       if (token && !isCarousel){
