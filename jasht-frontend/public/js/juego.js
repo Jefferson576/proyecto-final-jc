@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Obtiene el ID de juego desde la URL
     const params = new URLSearchParams(window.location.search);
     const gameId = params.get("id");
+    const sourceKey = params.get("key");
+    const titleQuery = params.get("title") || "";
+    const isPublic = params.get("public") === "1";
 
     // Elementos del DOM
     // Referencias a elementos del DOM
@@ -30,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const descToggle = document.getElementById("desc-toggle");
 
     const volverBtn = document.getElementById("volver");
-    volverBtn.addEventListener("click", () => window.location.href = "/");
+    volverBtn.addEventListener("click", () => window.location.href = isPublic ? "/html/catalog.html" : "/");
 
     // placeholder de imagen si no existe
     // Imagen por defecto si falta portada
@@ -47,10 +50,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const token = localStorage.getItem("token");
-            // Petición al backend con token cuando exista
-            const res = await fetch(`${API_BASE}/games/${gameId}`, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {}
-            });
+            // Fuente: público del catálogo o juego privado del usuario
+            const headers = isPublic ? {} : (token ? { Authorization: `Bearer ${token}` } : {});
+            let res;
+            if (isPublic) {
+                // Preferir búsqueda por título para obtener el _id correcto del catálogo
+                const searchTitle = (titleQuery || String(sourceKey || '').split('::')[0] || '').trim();
+                if (searchTitle) {
+                    try {
+                        const sRes = await fetch(`${API_BASE}/catalog?search=${encodeURIComponent(searchTitle)}`);
+                        if (sRes.ok) {
+                            const list = await sRes.json();
+                            if (Array.isArray(list) && list.length) {
+                                const lower = searchTitle.toLowerCase();
+                                const pick = list.find(x => String(x.title||'').toLowerCase() === lower) || list[0];
+                                if (pick && pick._id) {
+                                    res = await fetch(`${API_BASE}/catalog/${pick._id}`);
+                                }
+                            }
+                        }
+                    } catch(_e) {}
+                }
+                // Si búsqueda no resolvió, intentar por id/sourceKey directamente
+                if (!res) {
+                    const catalogTarget = sourceKey || gameId || '';
+                    res = await fetch(`${API_BASE}/catalog/${catalogTarget}`);
+                }
+            } else {
+                res = await fetch(`${API_BASE}/games/${gameId}`, { headers });
+            }
+            // Fallback 1: si vista pública falla y tenemos id, intenta por id en catálogo
+            if (isPublic && !res.ok && gameId) {
+                try { res = await fetch(`${API_BASE}/catalog/${gameId}`); } catch(_e) {}
+            }
+            // Fallback 2: si aún falla y hay token, intenta vía privada
+            if (isPublic && !res.ok && token && gameId) {
+                try { res = await fetch(`${API_BASE}/games/${gameId}`, { headers: { Authorization: `Bearer ${token}` } }); } catch(_e) {}
+            }
+            // Fallback 3: buscar por título en catálogo si aún no se pudo cargar
+            if (isPublic && !res.ok) {
+                try {
+                    const searchTitle = (titleQuery || String(sourceKey || '').split('::')[0] || '').trim();
+                    if (searchTitle) {
+                        const sRes = await fetch(`${API_BASE}/catalog?search=${encodeURIComponent(searchTitle)}`);
+                        if (sRes.ok) {
+                            const list = await sRes.json();
+                            if (Array.isArray(list) && list.length) {
+                                const lower = searchTitle.toLowerCase();
+                                const pick = list.find(x => String(x.title||'').toLowerCase() === lower) || list[0];
+                                if (pick && pick._id) {
+                                    res = await fetch(`${API_BASE}/catalog/${pick._id}`);
+                                }
+                            }
+                        }
+                    }
+                } catch(_e) {}
+            }
             if (!res.ok) {
                 if (res.status === 401 || res.status === 403) {
                     try {
@@ -59,9 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     } catch (_) {
                         alert("Tu sesión ha expirado o falta el token. Inicia sesión nuevamente.");
                     }
-                    localStorage.removeItem("token");
-                    window.location.href = "/html/login.html";
-                    return;
+                    if (!isPublic) {
+                      localStorage.removeItem("token");
+                      window.location.href = "/html/login.html";
+                      return;
+                    }
                 }
                 const msg = await res.text();
                 throw new Error(`Juego no encontrado (status ${res.status}). ${msg}`);
@@ -115,7 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (progressControl && progressEdit && progressSave) {
                 const inicial = Number.isFinite(pv) ? Math.max(0, Math.min(100, pv)) : (juego.completed ? 100 : 0);
                 progressEdit.value = inicial;
-                progressControl.style.display = esAdmin ? 'none' : '';
+                // Ocultar control de progreso si es admin o si es vista pública del catálogo
+                progressControl.style.display = (esAdmin || isPublic) ? 'none' : '';
                 progressEdit.addEventListener('input', function(){
                     const v = Math.max(0, Math.min(100, Number(this.value)));
                     progressFill.style.width = `${v}%`;
@@ -167,10 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // Render de reseñas propias y cálculo de promedio
+            // Render de reseñas propias y cálculo de promedio (solo juegos privados)
             let htmlPropias = '';
             let ownSum = 0, ownCount = 0;
-            if (Array.isArray(juego.reviews) && juego.reviews.length > 0) {
+            if (!isPublic && Array.isArray(juego.reviews) && juego.reviews.length > 0) {
                 htmlPropias = juego.reviews.map(r => {
                     if (typeof r === "string") {
                         ownSum += 5; ownCount += 1;
@@ -227,8 +285,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Enviar reseña
-    reviewForm.addEventListener("submit", async (e) => {
+    // Enviar reseña (solo en juegos privados del usuario)
+    if (reviewForm && !isPublic) reviewForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const ratingInput = document.querySelector('input[name="rating"]:checked');

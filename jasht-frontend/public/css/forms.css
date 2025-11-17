@@ -12,7 +12,7 @@
     display: block;
     margin-top: 10px;
     font-weight: bold;
-    color: #00adee;
+    color: #14ee00;
 }
 
 .formulario-juego input, .formulario-juego textarea {
@@ -35,7 +35,7 @@
     border-radius: 999px;
     cursor: pointer;
     font-size: 16px;
-    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    box-shadow: 0 8px 18px rgba(0, 238, 0, 0.25);
     transition: transform .15s ease, filter .15s ease;
 }
 
@@ -52,10 +52,10 @@
 }
 
 .formulario-juego input:focus, .formulario-juego textarea:focus {
-    outline: 2px solid #00adee;
+    outline: 2px solid #1cee00;
     outline-offset: 2px;
     background-color: #1a1a1a;
-    border-color: #00adee;
+    border-color: #18ee00;
 }
 
 @media (max-width: 600px) {
@@ -68,7 +68,7 @@
         font-size: 18px;
         margin-top: 20px;
         margin-bottom: 8px;
-        color: #00adee;
+        color: #00ee08;
         font-weight: 600;
     }
     .formulario-juego input, .formulario-juego textarea {
@@ -94,7 +94,7 @@
         border: 1px solid rgba(255,255,255,0.12);
         color: #0b1a12;
         background: linear-gradient(90deg,#29d38c,#87ffad);
-        box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+        box-shadow: 0 8px 18px rgba(0, 238, 36, 0.25);
         transition: transform .15s ease, filter .15s ease;
     }
     .formulario-juego button:hover { filter: brightness(1.06); transform: translateY(-1px); }

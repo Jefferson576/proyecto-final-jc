@@ -31,7 +31,7 @@ body {
 
 header h1 {
     margin: 0;
-    color: #b8ced6;
+    color: #b8d6bb;
     letter-spacing: 1px;
     font-size: 28px;
 }
@@ -115,7 +115,7 @@ header h1 {
     bottom: 0;
     width: 0%;
     border-radius: 999px;
-    background: linear-gradient(90deg, #00adee, #87ffad);
+    background: linear-gradient(90deg, #00ee9f, #87ffad);
     box-shadow: 0 0 12px rgba(0, 173, 238, 0.35);
     transition: width .25s ease;
 }
@@ -215,8 +215,8 @@ header h1 {
     margin: 0 0 12px 0;
     font-weight: 700;
     letter-spacing: .6px;
-    color: #9be4ff;
-    text-shadow: 0 0 10px rgba(0, 173, 238, 0.18);
+    color: #9bffa2;
+    text-shadow: 0 0 10px rgba(0, 238, 44, 0.18);
 }
 
 .descripcion h3 {
@@ -238,7 +238,7 @@ header h1 {
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     padding: 10px 12px;
-    color: #d9f7ff;
+    color: #d9ffef;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     display: flex;
     align-items: center;
@@ -247,7 +247,7 @@ header h1 {
 }
 
 .extra-info ul li strong {
-    color: #7be1ff;
+    color: #7bff8f;
     flex: 0 0 auto;
     min-width: 120px;
 }
@@ -454,7 +454,7 @@ header h1 {
     font-weight: 600;
     color: #0b1a12;
     background: linear-gradient(90deg, #6ee7ff, #87ffad);
-    box-shadow: 0 8px 18px rgba(0, 173, 238, 0.2);
+    box-shadow: 0 8px 18px rgba(0, 238, 103, 0.2);
     cursor: pointer;
 }
 
@@ -485,7 +485,7 @@ header h1 {
 }
 
 .info-principal .meta strong {
-    color: #9be4ff;
+    color: #9bffda;
     display: inline-block;
     min-width: 110px;
 }

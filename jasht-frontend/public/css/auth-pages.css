@@ -117,7 +117,7 @@ body .auth-page {
   color: #0b1a12;
   cursor: pointer;
   background: linear-gradient(90deg, #29d38c, #87ffad);
-  box-shadow: 0 8px 18px rgba(0, 173, 238, 0.25);
+  box-shadow: 0 8px 18px rgba(107, 186, 144, 0.25);
   transition: transform .15s ease, filter .15s ease;
 }
 

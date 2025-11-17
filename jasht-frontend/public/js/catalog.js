@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="rating-mini">&#9733 ${(juego.rating?Number(juego.rating).toFixed(1):'0.0')}/5</div>
         </div>
       `;
+      // Navegar al detalle público del catálogo al hacer click
+      const img = card.querySelector('img');
+      const titleEl = card.querySelector('h2');
+      const detailId = juego._id || '';
+      const sourceKey = juego.sourceKey || `${(juego.title||'').toLowerCase()}::${(juego.developer||'').toLowerCase()}`;
+      const abrirDetalle = () => (window.location.href = `/html/juego.html?key=${encodeURIComponent(sourceKey)}${detailId?`&id=${encodeURIComponent(detailId)}`:''}&title=${encodeURIComponent(juego.title||'')}&public=1`);
+      img?.addEventListener('click', abrirDetalle);
+      titleEl?.addEventListener('click', abrirDetalle);
       const imgEl = card.querySelector('img');
       if (imgEl){
         imgEl.loading = 'lazy';

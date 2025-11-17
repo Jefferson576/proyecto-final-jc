@@ -7,7 +7,7 @@
 }
 
 .user-info i {
-  color: #00adee;
+  color: #00ee53;
   font-size: 18px;
 }
 
@@ -43,7 +43,7 @@
   background: linear-gradient(90deg,#29d38c,#87ffad);
   color: #0b1a12;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+  box-shadow: 0 8px 18px rgba(0, 238, 143, 0.25);
   transition: transform .15s ease, filter .15s ease;
 }
 .volver-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
@@ -57,7 +57,7 @@
   background: linear-gradient(90deg,#29d38c,#87ffad);
   color: #0b1a12;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+  box-shadow: 0 8px 18px rgba(0, 238, 87, 0.25);
   transition: transform .15s ease, filter .15s ease;
 }
 .enviar-btn:hover,
@@ -73,7 +73,7 @@
 
 /* Focus states for better accessibility */
 #username:focus, #email:focus, #password:focus, #confirmPassword:focus, #confirm:focus {
-  outline: 2px solid #00adee;
+  outline: 2px solid #00ee43;
   outline-offset: 2px;
   background-color: #333;
 }
@@ -97,7 +97,7 @@
   background: linear-gradient(90deg,#29d38c,#87ffad);
   color: #0b1a12;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+  box-shadow: 0 8px 18px rgba(0, 238, 135, 0.25);
   transition: transform .15s ease, filter .15s ease;
 }
 .recuperar-btn:hover,

@@ -7,7 +7,7 @@
     border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
-    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    box-shadow: 0 8px 18px rgba(76, 207, 100, 0.25);
     transition: transform .15s ease, filter .15s ease;
 }
 
@@ -22,7 +22,7 @@
     border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
-    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    box-shadow: 0 8px 18px rgba(86, 215, 74, 0.25);
     transition: transform .15s ease, filter .15s ease;
 }
 
@@ -59,7 +59,7 @@
     border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
-    box-shadow: 0 8px 18px rgba(0,173,238,0.25);
+    box-shadow: 0 8px 18px rgba(104, 162, 81, 0.25);
     transition: transform .15s ease, filter .15s ease;
 }
 .save-btn:disabled {

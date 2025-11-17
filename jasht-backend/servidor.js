@@ -210,6 +210,53 @@ app.get("/catalog", async (req, res) => {
   }
 });
 
+// Detalle público de catálogo por ID (sin autenticación)
+app.get("/catalog/:id", async (req, res) => {
+  try {
+    const idOrKey = String(req.params.id || "").trim();
+    const escapeRx = (str) => String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    let juego = null;
+
+    // Intento 1: por ObjectId si aplica
+    if (/^[0-9a-fA-F]{24}$/.test(idOrKey)) {
+      juego = await Game.findOne({ _id: idOrKey, public: true })
+        .select("title description category image rating developer size version year createdAt public sourceKey");
+    }
+
+    // Intento 2: por sourceKey exacto
+    if (!juego) {
+      juego = await Game.findOne({ public: true, sourceKey: idOrKey })
+        .select("title description category image rating developer size version year createdAt public sourceKey");
+    }
+
+    // Intento 3: por título (flexible) si viene 'title::developer'
+    if (!juego && idOrKey.includes("::")) {
+      const [t, d] = idOrKey.split("::");
+      const titlePart = String(t || "").trim();
+      const devPart = String(d || "").trim();
+      const rxTitleExact = new RegExp(`^${escapeRx(titlePart)}$`, "i");
+      const rxTitleLoose = new RegExp(escapeRx(titlePart), "i");
+
+      const candidates = await Game.find({ public: true, $or: [
+        { sourceKey: idOrKey },
+        { title: rxTitleExact },
+        { title: rxTitleLoose },
+      ] }).limit(5).select("title description category image rating developer size version year createdAt public sourceKey");
+
+      if (candidates && candidates.length) {
+        const devLower = devPart.toLowerCase();
+        juego = candidates.find(c => String(c.developer || "").toLowerCase().includes(devLower)) || candidates[0];
+      }
+    }
+
+    if (!juego) return res.status(404).json({ mensaje: "Juego público no encontrado" });
+    res.json(juego);
+  } catch (error) {
+    console.error("Error en catálogo público detalle:", error);
+    res.status(500).json({ mensaje: "Error al obtener juego del catálogo" });
+  }
+});
+
 // Reseñas compartidas por clave (title+developer en minúsculas)
 app.get("/shared-reviews", async (req, res) => {
   try {
