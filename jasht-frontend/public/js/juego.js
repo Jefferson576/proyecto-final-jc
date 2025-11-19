@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (typeof r === "string") {
                         ownSum += 5; ownCount += 1;
                         return `<li class="review-item">
-                      <span class="review-stars">${'★'.repeat(5)}</span>
+                      <span class="review-stars">${'&#9733;'.repeat(5)}</span>
                       <span class="review-text">${escapeHtml(r)}</span>
                     </li>`;
                     } else {
@@ -325,9 +325,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (Array.isArray(updated.reviews)) {
                 reviewsList.innerHTML = updated.reviews.map(r => {
                     if (typeof r === "string") {
-                        return `<li class="review-item"><span class="review-stars">${'★'.repeat(5)}</span><span class="review-text">${escapeHtml(r)}</span></li>`;
+                        return `<li class="review-item"><span class="review-stars">${'&#9733;'.repeat(5)}</span><span class="review-text">${escapeHtml(r)}</span></li>`;
                     } else {
-                        return `<li class="review-item"><span class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span><span class="review-text">${escapeHtml(r.text)}</span></li>`;
+                        return `<li class="review-item"><span class="review-stars">${'&#9733;'.repeat(r.rating)}${'&#9734;'.repeat(5 - r.rating)}</span><span class="review-text">${escapeHtml(r.text)}</span></li>`;
                     }
                 }
                 ).join("");
