@@ -112,7 +112,7 @@ header {
   bottom: 0;
   width: 0%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #00adee, #87ffad);
+  background: linear-gradient(90deg, #29d38c, #87ffad);
 }
 
 .progress-mini .text {
@@ -204,29 +204,7 @@ header {
   user-select: none;
 }
 
-@media (max-width: 1000px) {
-  .main-header {
-    padding: 12px 20px;
-    flex-wrap: wrap;
-    row-gap: 8px;
-  }
-
-  .menu {
-    gap: 24px;
-  }
-
-  #logout-btn {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-
-  .user-info {
-    max-width: 50%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
+/* eliminado bloque duplicado @media (max-width: 1000px) */
 
 @media (max-width: 1000px) {
   .hamburger {

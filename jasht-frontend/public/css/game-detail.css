@@ -158,7 +158,7 @@ header h1 {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: linear-gradient(90deg, #00adee, #87ffad);
+    background: linear-gradient(90deg, #29d38c, #87ffad);
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px rgba(0, 173, 238, 0.35);
     margin-top: -5px;
     cursor: pointer;
@@ -175,7 +175,7 @@ header h1 {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: linear-gradient(90deg, #00adee, #87ffad);
+    background: linear-gradient(90deg, #29d38c, #87ffad);
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px rgba(0, 173, 238, 0.35);
     cursor: pointer;
 }
