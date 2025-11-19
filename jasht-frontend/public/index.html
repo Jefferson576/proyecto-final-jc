@@ -12,17 +12,18 @@
 </head>
 
 <body>
+  <!-- HEADER -->
   <header class="main-header">
     <div class="header-inner">
       <div class="logo">
-        <img src="/img/logo.png" alt="" width="60" height="60">
+        <img src="img/logo.png" alt="" width="60" height="60">
       </div>
       <h1>JASHT STORE</h1>
     </div>
     <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
     <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">☰</label>
     <nav class="menu">
-      <a href="/index.html">Inicio</a>
+      <a href="index.html">Inicio</a>
       <a href="/html/insertar.html" id="add-link" style="display:none;">Agregar juego</a>
       <a href="/html/estadisticas.html">Estadísticas</a>
       <a href="/html/catalog.html">Todos los juegos</a>
@@ -34,16 +35,19 @@
     </nav>
   </header>
 
+  <!-- MAIN -->
   <main class="page-wrap">
     <div class="barra-superior">
       <input type="text" id="buscar" placeholder="Buscar juego..." />
       <button id="agregar" onclick="window.location.href='/html/insertar.html'"> Agregar juego</button>
     </div>
+
     <div id="games-container" class="games-container">
       <p>Cargando juegos...</p>
     </div>
   </main>
 
+  <!-- SCRIPT -->
   <script src="/js/common.js"></script>
   <script src="/js/app.js" defer></script>
 </body>
